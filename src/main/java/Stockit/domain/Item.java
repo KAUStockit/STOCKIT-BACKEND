@@ -17,6 +17,7 @@ public class Item {
     // code -> varchar(45), name(company) -> varchar(45), is_active -> boolean, issuance->double, url->varchar(45)
     @Id
     private Long id;
+
     @Column(name = "code")
     private String code;
     @Column(name = "name")
@@ -33,6 +34,7 @@ public class Item {
         this.name = name;
         this.issuance = issuance;
         this.is_active = is_active;
+
         this.url = url;
     }
 
