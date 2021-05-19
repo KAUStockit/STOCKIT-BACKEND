@@ -3,6 +3,7 @@ package Stockit.service;
 import Stockit.domain.Item;
 import Stockit.repository.ItemRepository;
 import Stockit.repository.ItemRepositoryImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.lang.model.type.NullType;
@@ -12,7 +13,12 @@ import java.util.Optional;
 
 @Service
 public class ItemService {
-    private final ItemRepository itemRepository = new ItemRepositoryImpl();
+    private final ItemRepository itemRepository;
+
+    @Autowired
+    public ItemService(ItemRepository itemRepository) {
+         this.itemRepository = itemRepository;
+    }
 
     //전체 Item들 조회
     public List<Item> findItems(){
