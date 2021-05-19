@@ -21,7 +21,7 @@ public class ItemController {
                          @RequestParam("is_active") AtomicBoolean is_active,
                          @RequestParam("issurance")AtomicLong issuance,
                          @RequestParam("url") String url){
-        Item one_item = new Item(id, code, name, is_active, issuance, url);
+        Item one_item = new Item(code, name, is_active, issuance, url);
         return one_item;
     }
 }
