@@ -10,13 +10,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Data
 @Table(name = "Item")
 @Entity
+@Data
 public class Item {
     // code -> varchar(45), name(company) -> varchar(45), is_active -> boolean, issuance->double, url->varchar(45)
     @Id
-    private AtomicInteger id;
+    private Long id;
 
     @Column(name = "code")
     private String code;
@@ -29,12 +29,12 @@ public class Item {
     @Column(name = "url")
     private String url;
 
-    public Item(AtomicInteger id, String code, String name, AtomicBoolean is_active, AtomicLong issuance, String url) {
-        this.id = id;
+    public Item(String code,String name,AtomicBoolean is_active, AtomicLong issuance, String url){
         this.code = code;
         this.name = name;
-        this.is_active = is_active;
         this.issuance = issuance;
+        this.is_active = is_active;
+
         this.url = url;
     }
 
@@ -42,51 +42,11 @@ public class Item {
 
     }
 
-    public AtomicInteger getId() {
-        return id;
-    }
-
-    public void setId(AtomicInteger id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public AtomicBoolean getIs_active() {
-        return is_active;
-    }
-
-    public void setIs_active(AtomicBoolean is_active) {
-        this.is_active = is_active;
-    }
-
-    public AtomicLong getIssurance() {
-        return issuance;
-    }
-
-    public void setIssurance(AtomicLong issurance) {
-        this.issuance = issurance;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+    public Long getId() {
+        return id;
     }
 }
