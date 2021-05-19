@@ -2,12 +2,10 @@ package Stockit.service;
 
 import Stockit.domain.Member;
 import Stockit.repository.MemberRepository;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
 public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;

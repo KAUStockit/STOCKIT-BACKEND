@@ -1,8 +1,6 @@
 package Stockit.service;
 
 import Stockit.domain.Member;
-import Stockit.repository.MemberRepository;
-import Stockit.repository.MemberRepositoryImpl;
 
 import java.util.List;
 import java.util.Optional;

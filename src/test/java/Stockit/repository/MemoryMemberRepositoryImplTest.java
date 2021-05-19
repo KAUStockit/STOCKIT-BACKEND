@@ -15,14 +15,16 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-class MemberRepositoryImplTest {
+class MemoryMemberRepositoryImplTest {
 
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+    MemberService memberService;
     MemberRepository memberRepository;
 
     @BeforeEach
     public void beforeEach() {
-        ApplicationContext ac = new AnnotationConfigApplicationContext(AppConfig.class);
-        memberRepository = ac.getBean("memberRepositoryImpl", MemberRepositoryImpl.class);
+        memberService = applicationContext.getBean("memberService", MemberService.class);
+        memberRepository = applicationContext.getBean("memberRepository", MemoryMemberRepository.class);
     }
 
     @AfterEach

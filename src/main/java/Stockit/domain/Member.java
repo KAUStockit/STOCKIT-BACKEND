@@ -2,30 +2,25 @@ package Stockit.domain;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-@Entity
 @Getter
 public class Member {
 
-    @Id @GeneratedValue
-    @Column(name = "member_id")
     private Long id;
     private final String name;
     private final String nickname;
     private final String email;
     private String password;
-    @Column(columnDefinition = "long default 1000000") //기본값 100만원
-    private Long balance;
+    private final Long balance;
 
     public Member(String name, String nickname, String email, String password) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
-        this.password = password;
+        this.password = sha256(password);
+        this.balance = 1000000L; //초기값 10만원
     }
 
     public Long setPassword(String password) {
@@ -36,5 +31,24 @@ public class Member {
     public Long setId(Long id) {
         this.id = id;
         return getId();
+    }
+
+    //비밀번호 암호화 알고리즘
+    public static String sha256(String msg) {
+        String sha = "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(msg.getBytes());
+            byte byteData[] = md.digest();
+            StringBuffer sb = new StringBuffer();
+            for (byte byteDatum : byteData) {
+                sb.append(Integer.toString((byteDatum & 0xff) + 0x100, 16).substring(1));
+            }
+            sha = sb.toString();
+        } catch(NoSuchAlgorithmException e) {
+            //Error
+            sha = null;
+        }
+        return sha;
     }
 }

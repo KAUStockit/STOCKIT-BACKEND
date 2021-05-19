@@ -3,7 +3,7 @@ package Stockit.service;
 import Stockit.AppConfig;
 import Stockit.domain.Member;
 import Stockit.repository.MemberRepository;
-import Stockit.repository.MemberRepositoryImpl;
+import Stockit.repository.MemoryMemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,17 +21,17 @@ class MemberServiceTest {
 
     ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
     MemberService memberService;
-    MemberRepository repository;
+    MemberRepository memberRepository;
 
     @BeforeEach
     public void beforeEach() {
         memberService = applicationContext.getBean("memberService", MemberService.class);
-        repository = applicationContext.getBean("memberRepository", MemberRepositoryImpl.class);
+        memberRepository = applicationContext.getBean("memberRepository", MemoryMemberRepository.class);
     }
 
     @AfterEach
     public void afterEach() {
-        repository.clearStore();
+        memberRepository.clearStore();
     }
 
     @Test

@@ -1,8 +1,6 @@
 package Stockit.repository;
 
 import Stockit.domain.Member;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +9,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Component
-public class MemberRepositoryImpl implements MemberRepository {
+public class MemoryMemberRepository implements MemberRepository {
 
     // 동시성 문제 고려로 AtmoicLong, ConcurrentHashMap 사용
     Map<Long, Member> store = new ConcurrentHashMap<>();
