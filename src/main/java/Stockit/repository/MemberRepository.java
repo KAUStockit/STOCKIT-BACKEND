@@ -1,31 +1,35 @@
 package Stockit.repository;
 
 import Stockit.domain.Member;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 
-public interface MemberRepository {
+@Repository //스프링 빈으로 등록, JPA 예외를 스프링 기반 예외로 변환
+@RequiredArgsConstructor
+public class MemberRepository {
 
-    //id로 회원 조회
-    Optional<Member> findById(Long id);
+    private final EntityManager em;
 
-    //name으로 회원 조회
-    Optional<Member> findByName(String name);
+    public void save(Member member) {
+        em.persist(member);
+    }
 
-    //nickname으로 회원 조회
-    Optional<Member> findByNickname(String nickname);
+    public Member findOne(Long id) {
+        return em.find(Member.class, id);
+    }
 
-    //email로 회원 조회
-    Optional<Member> findByEmail(String email);
+    public List<Member> findAll() {
+        return em.createQuery("select m from Member m", Member.class)
+                .getResultList();
+    }
 
-    //회원 저장
-    Member save(Member member);
 
-    //회원목록 전체 조회
-    List<Member> findAll();
-
-    //테스트 용도
-    void clearStore();
-
+    public List<Member> findByEmail(String email) {
+        return em.createQuery("select m from Member m where m.email = :email", Member.class)
+                .setParameter("email", email)
+                .getResultList();
+    }
 }

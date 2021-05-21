@@ -1,36 +1,39 @@
 package Stockit.domain;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 @Getter
+@Setter
 public class Member {
 
+    @Id @GeneratedValue
+    @Column(name = "member_id")
     private Long id;
-    private final String name;
-    private final String nickname;
-    private final String email;
+
+    private String name;
+    private String Nickname;
+
+    @Column(name="email", unique = true)
+
+    private String email;
     private String password;
-    private final Long balance;
+    private Long balance = 1000000L;
 
-    public Member(String name, String nickname, String email, String password) {
-        this.name = name;
-        this.nickname = nickname;
-        this.email = email;
+
+    @OneToMany(mappedBy = "member") //1:N관계이므로 list사용. 1쪽이므로 owner객체 아님
+    private List<Order> orders = new ArrayList<>();
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void setPassword(String password) {
         this.password = sha256(password);
-        this.balance = 1000000L; //초기값 10만원
-    }
-
-    public Long setPassword(String password) {
-        this.password = password;
-        return getId();
-    }
-
-    public Long setId(Long id) {
-        this.id = id;
-        return getId();
     }
 
     //비밀번호 암호화 알고리즘
