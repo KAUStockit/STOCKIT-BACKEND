@@ -22,8 +22,8 @@ public class Member {
     private String Nickname;
 
     @Column(name="email", unique = true)
-
     private String email;
+
     private String password;
     private Long balance = 1000000L;
 
