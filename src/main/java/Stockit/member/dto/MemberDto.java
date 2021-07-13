@@ -1,4 +1,4 @@
-package Stockit.dto;
+package Stockit.member.dto;
 
 import lombok.Getter;
 import lombok.Setter;

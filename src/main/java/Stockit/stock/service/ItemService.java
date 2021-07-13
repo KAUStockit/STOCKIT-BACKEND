@@ -1,7 +1,7 @@
-package Stockit.service;
+package Stockit.stock.service;
 
-import Stockit.domain.Stock;
-import Stockit.repository.StockRepository;
+import Stockit.stock.domain.Stock;
+import Stockit.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

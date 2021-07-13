@@ -1,9 +1,10 @@
-package Stockit.service;
+package Stockit.member.service;
 
-import Stockit.domain.Member;
-import Stockit.domain.Order;
-import Stockit.domain.Stock;
-import Stockit.repository.OrderRepository;
+import Stockit.member.domain.Member;
+import Stockit.stock.domain.Order;
+import Stockit.stock.domain.Stock;
+import Stockit.stock.repository.OrderRepository;
+import Stockit.stock.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Transactional
 class OrderServiceTest {
@@ -21,7 +20,8 @@ class OrderServiceTest {
     @PersistenceContext
     EntityManager em;
 
-    @Autowired OrderService orderService;
+    @Autowired
+    OrderService orderService;
     @Autowired OrderRepository orderRepository;
 
     @Test

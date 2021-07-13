@@ -1,7 +1,7 @@
-package Stockit.service;
+package Stockit.member.service;
 
-import Stockit.domain.Member;
-import Stockit.repository.MemberRepository;
+import Stockit.member.domain.Member;
+import Stockit.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
