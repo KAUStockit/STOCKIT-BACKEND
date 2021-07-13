@@ -1,8 +1,8 @@
-package Stockit.controller;
+package Stockit.member.controller;
 
-import Stockit.domain.Member;
-import Stockit.dto.MemberDto;
-import Stockit.service.MemberService;
+import Stockit.member.domain.Member;
+import Stockit.member.dto.MemberDto;
+import Stockit.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

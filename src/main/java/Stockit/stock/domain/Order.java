@@ -1,5 +1,6 @@
-package Stockit.domain;
+package Stockit.stock.domain;
 
+import Stockit.member.domain.Member;
 import lombok.Getter;
 import lombok.Setter;
 

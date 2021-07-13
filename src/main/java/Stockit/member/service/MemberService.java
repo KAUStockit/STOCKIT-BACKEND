@@ -1,9 +1,8 @@
-package Stockit.service;
+package Stockit.member.service;
 
-import Stockit.domain.Member;
-import Stockit.repository.MemberRepository;
+import Stockit.member.domain.Member;
+import Stockit.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,6 +1,6 @@
-package Stockit.repository;
+package Stockit.stock.repository;
 
-import Stockit.domain.Stock;
+import Stockit.stock.domain.Stock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
