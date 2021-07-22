@@ -1,5 +1,6 @@
 package Stockit.member.domain;
 
+import Stockit.ranking.domain.Rank;
 import Stockit.stock.domain.Order;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class Member {
     private Long id;
 
     private String name;
+
     private String Nickname;
 
     @Column(name="email", unique = true)
@@ -28,6 +30,10 @@ public class Member {
     private String password;
     private Long balance = 1000000L;
 
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "member")
+    private Rank rank;
 
     @OneToMany(mappedBy = "member") //1:N관계이므로 list사용. 1쪽이므로 owner객체 아님
     private List<Order> orders = new ArrayList<>();
