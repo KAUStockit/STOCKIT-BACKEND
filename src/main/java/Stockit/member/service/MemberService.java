@@ -2,6 +2,7 @@ package Stockit.member.service;
 
 import Stockit.member.domain.Member;
 import Stockit.member.repository.MemberRepository;
+import Stockit.ranking.domain.RankRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import java.util.List;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private RankRepository rankRepository;
 
     @Transactional //수정 가능
     public Long join(Member member) {
