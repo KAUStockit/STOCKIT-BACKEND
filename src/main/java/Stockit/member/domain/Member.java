@@ -1,8 +1,8 @@
 package Stockit.member.domain;
 
+import Stockit.member.dto.MemberDto;
 import Stockit.stock.domain.Order;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.security.MessageDigest;
@@ -10,9 +10,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
-@Setter
+@ToString
+@Entity
+@NoArgsConstructor
 public class Member {
 
     @Id @GeneratedValue
@@ -20,7 +21,7 @@ public class Member {
     private Long id;
 
     private String name;
-    private String Nickname;
+    private String nickname;
 
     @Column(name="email", unique = true)
     private String email;
@@ -29,16 +30,28 @@ public class Member {
     private Long balance = 1000000L;
 
 
+    public Member(String name, String nickname, String email, String password) {
+        this.name = name;
+        this.nickname = nickname;
+        this.email = email;
+        this.password = convertPassword(password);
+    }
+
+    public Member(MemberDto memberDto) {
+        this(memberDto.getName(), memberDto.getNickname(), memberDto.getEmail(), "");
+        this.password = convertPassword(memberDto.getPassword());
+    }
+
     @OneToMany(mappedBy = "member") //1:N관계이므로 list사용. 1쪽이므로 owner객체 아님
     private List<Order> orders = new ArrayList<>();
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void setPassword(String password) {
-        this.password = sha256(password);
+    private String convertPassword(String password) {
+        return sha256(password);
     }
 
     //비밀번호 암호화 알고리즘
-    public static String sha256(String msg) {
+    protected static String sha256(String msg) {
         String sha = "";
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
