@@ -41,11 +41,7 @@ class OrderServiceTest {
     }
 
     private Member createMember() {
-        Member member = new Member();
-        member.setName("회원1");
-        member.setNickname("주린이1");
-        member.setEmail("stockit@stockit.com");
-        member.setPassword("abcdefg");
+        Member member = new Member("회원1", "주린이1", "stockit@stockit.com", "abcdefg");
         em.persist(member);
         return member;
     }

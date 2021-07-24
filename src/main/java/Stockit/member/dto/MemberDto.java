@@ -1,9 +1,10 @@
 package Stockit.member.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.*;
 
-@Getter @Setter
+@NoArgsConstructor
+@Data
 public class MemberDto {
 
     private String name;

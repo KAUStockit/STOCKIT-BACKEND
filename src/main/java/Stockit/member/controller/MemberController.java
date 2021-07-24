@@ -4,46 +4,40 @@ import Stockit.member.domain.Member;
 import Stockit.member.dto.MemberDto;
 import Stockit.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@Slf4j
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/members")
 public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping(value = "/members/new")
-    public String createForm(Model model) {
-        model.addAttribute("memberDto", new MemberDto());
-        return "members/memberJoin";
+    @GetMapping(value = "/new")
+    public void createForm(Model model) {
+        log.info("member join form");
     }
 
-    @PostMapping(value = "/members/new")
-    public String create(MemberDto form, BindingResult result) {
-        if(result.hasErrors()) {
-            return "members/memberJoin";
-        }
-
-        Member member = new Member();
-        member.setName(form.getName());
-        member.setNickname(form.getNickname());
-        member.setEmail(form.getEmail());
-        member.setPassword(form.getPassword());
+    @PostMapping(value = "/new")
+    public ResponseEntity<Long> create(@RequestBody MemberDto form) {
+        Member member = new Member(form);
         memberService.join(member);
-
-        return "redirect:/";
+        return ResponseEntity.status(HttpStatus.OK).body(member.getId());
     }
 
-    @GetMapping(value = "/members")
-    public String list(Model model) {
-        List<Member> members = memberService.findMembers();
-        model.addAttribute("members", members);
-        return "members/memberList";
+
+    @GetMapping(value = "/")
+    public ResponseEntity<List<Member>> list() {
+        List<Member> members = memberService.findAllMembers();
+        return ResponseEntity.status(HttpStatus.OK).body(members);
     }
 }
