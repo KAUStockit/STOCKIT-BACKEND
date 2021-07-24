@@ -32,4 +32,9 @@ public class MemberRepository {
                 .setParameter("email", email)
                 .getResultList();
     }
+    //findAllByOrderByIdAsc
+    public List<Member> findAllByOrderByEarningRateDesc() {
+        return em.createQuery("select m from Member m order by m.earningRate desc ", Member.class)
+                .getResultList();
+    }
 }
