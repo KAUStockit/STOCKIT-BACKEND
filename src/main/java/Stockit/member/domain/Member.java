@@ -3,10 +3,14 @@ package Stockit.member.domain;
 import Stockit.member.dto.MemberDto;
 import Stockit.stock.domain.Order;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +18,12 @@ import java.util.List;
 @ToString
 @Entity
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Member {
 
     @Id @GeneratedValue
     @Column(name = "member_id")
-    private Long id;
+    private Long idx;
 
     private String name;
     private String nickname;
@@ -28,6 +33,16 @@ public class Member {
 
     private String password;
     private Long balance = 1000000L;
+    private Long beforeBalance = 0L;
+
+    @CreatedDate
+    private LocalDateTime createTime;
+
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
+
+    private Double earningRate = 0.0;
+
 
 
     public Member(String name, String nickname, String email, String password) {

@@ -2,6 +2,7 @@ package Stockit.member.controller;
 
 import Stockit.member.domain.Member;
 import Stockit.member.dto.MemberDto;
+import Stockit.member.dto.RankDto;
 import Stockit.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,17 +28,29 @@ public class MemberController {
         log.info("member join form");
     }
 
-    @PostMapping(value = "/new")
-    public ResponseEntity<Long> create(@RequestBody MemberDto form) {
-        Member member = new Member(form);
-        memberService.join(member);
-        return ResponseEntity.status(HttpStatus.OK).body(member.getId());
-    }
-
-
     @GetMapping(value = "/")
     public ResponseEntity<List<Member>> list() {
         List<Member> members = memberService.findAllMembers();
         return ResponseEntity.status(HttpStatus.OK).body(members);
     }
+
+    @PostMapping(value = "/new")
+    public ResponseEntity<Long> create(@RequestBody MemberDto form) {
+        Member member = new Member(form);
+        memberService.join(member);
+        return ResponseEntity.status(HttpStatus.OK).body(member.getIdx());
+    }
+
+    @GetMapping(value = "/rank_list")
+    public ResponseEntity<List<RankDto>> getRankList() {
+        List<RankDto> rankList = memberService.getRankList();
+        return ResponseEntity.status(HttpStatus.OK).body(rankList);
+    }
+
+    @PutMapping(value = "/rank_update")
+    public void rankUpdate() {
+        memberService.updateEarningRate();
+    }
+
+
 }
