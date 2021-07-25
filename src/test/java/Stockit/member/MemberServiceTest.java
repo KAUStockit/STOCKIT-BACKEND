@@ -1,15 +1,18 @@
-package Stockit.member.service;
+package Stockit.member;
 
 import Stockit.member.domain.Member;
 import Stockit.member.repository.MemberRepository;
+import Stockit.member.service.MemberService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest //스프링부트 띄우고 테스트(@Autowired 사용 위해)
 class MemberServiceTest {
 
-    @Autowired MemberService memberService;
-    @Autowired MemberRepository memberRepository;
+    @Autowired private MemberService memberService;
+    @Autowired private MemberRepository memberRepository;
     private Member member;
     private Member member2;
 
@@ -35,10 +38,10 @@ class MemberServiceTest {
         //given
 
         //when
-        Long saveId = member.getId();
+        Long saveIdx = member.getIdx();
 
         //then
-        Assertions.assertThat(member).isEqualTo(memberRepository.findOne(saveId));
+        memberRepository.findById(saveIdx).orElseThrow(IllegalStateException::new);
     }
 
     @Test
@@ -68,9 +71,29 @@ class MemberServiceTest {
         //given
 
         //when
-        Member findMember = memberService.findOne(member.getId());
+        Optional<Member> findOptionalMember = memberService.findMember(this.member.getIdx());
 
         //then
-        Assertions.assertThat(findMember).isEqualTo(member);
+        findOptionalMember.ifPresent(findMember -> {
+            Assertions.assertThat(findMember).isEqualTo(this.member);
+        });
+    }
+
+    @Test
+    public void 랭킹_조회() {
+        //given
+
+        //when
+
+        //then
+    }
+
+    @Test
+    public void 수익률_업데이트() {
+        //given
+
+        //when
+
+        //then
     }
 }

@@ -32,8 +32,12 @@ public class Member {
     private String email;
 
     private String password;
-    private Long balance = 1000000L;
-    private Long beforeBalance = 0L;
+
+    @Setter
+    private int balance = 1000000;
+
+    //이전 주의 최종 balance
+    private int beforeBalance = 0;
 
     @CreatedDate
     private LocalDateTime createTime;
@@ -42,8 +46,6 @@ public class Member {
     private LocalDateTime lastModifiedDate;
 
     private Double earningRate = 0.0;
-
-
 
     public Member(String name, String nickname, String email, String password) {
         this.name = name;
