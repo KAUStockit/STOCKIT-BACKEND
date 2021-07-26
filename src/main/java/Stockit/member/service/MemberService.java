@@ -25,8 +25,8 @@ public class MemberService {
     }
 
     //중복 회원 검증
-    private void validateDuplicateMember(Member member) {
-        List<Member> findMembers = memberRepository.findByEmail(member.getEmail());
+    public void validateDuplicateMember(Member member) {
+        List<Member> findMembers = memberRepository.findMemberByEmailOrderByEmailDesc(member.getEmail());
         if(!findMembers.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
@@ -44,7 +44,7 @@ public class MemberService {
 
     //랭킹 조회
     public List<RankDto> getRankList(){
-        List<Member> m = memberRepository.findAllOrderByEarningRateDesc();
+        List<Member> m = memberRepository.findAllByOrderByEarningRateDssc();
         List<RankDto> rankDtos = new ArrayList<>();
         for(Member one_member: m){
             String email = one_member.getEmail();
@@ -67,5 +67,16 @@ public class MemberService {
 
             //logic2 : 수정된 earning_rate를 해당 유저 earning_rate로 업데이트
         }
+    }
+
+    //닉네임 중복 검사
+    public boolean validateDuplicatedNickname(String nickname) {
+        List<Member> members = memberRepository.findAllByNickname(nickname);
+        return members.size() == 0;
+    }
+
+    public boolean validateDuplicatedEmail(String email) {
+        List<Member> members = memberRepository.findAllByEmail(email);
+        return members.size() == 0;
     }
 }

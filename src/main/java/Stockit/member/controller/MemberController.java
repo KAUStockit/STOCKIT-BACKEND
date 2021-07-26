@@ -34,6 +34,20 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(members);
     }
 
+    @PostMapping(value = "/validate/nickname")
+    public ResponseEntity<String> checkDuplicatedNickname(@RequestBody String nickname) {
+        boolean validate = memberService.validateDuplicatedNickname(nickname);
+        if (validate) return ResponseEntity.status(HttpStatus.OK).body("닉네임 중복검사 통과");
+        else return ResponseEntity.status(HttpStatus.CONFLICT).body("닉네임 중복검사 불통과");
+    }
+
+    @PostMapping(value = "/validate/email")
+    public ResponseEntity<String> checkDuplicatedEmail(@RequestBody String email) {
+        boolean validate = memberService.validateDuplicatedEmail(email);
+        if (validate) return ResponseEntity.status(HttpStatus.OK).body("이메일 중복검사 통과");
+        else return ResponseEntity.status(HttpStatus.CONFLICT).body("닉네임 중복검사 불통과");
+    }
+
     @PostMapping(value = "/new")
     public ResponseEntity<Long> create(@RequestBody MemberDto form) {
         Member member = new Member(form);
