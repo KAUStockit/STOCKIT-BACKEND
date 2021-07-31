@@ -44,7 +44,7 @@ public class MemberService {
 
     //랭킹 조회
     public List<RankDto> getRankList(){
-        List<Member> m = memberRepository.findAllByOrderByEarningRateDssc();
+        List<Member> m = memberRepository.findAllByOrderByEarningRateDesc();
         List<RankDto> rankDtos = new ArrayList<>();
         for(Member one_member: m){
             String email = one_member.getEmail();
