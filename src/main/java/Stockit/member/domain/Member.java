@@ -1,7 +1,6 @@
 package Stockit.member.domain;
 
 import Stockit.member.dto.MemberDto;
-import Stockit.stock.domain.Order;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -11,10 +10,9 @@ import javax.persistence.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
+@Setter
 @ToString
 @Entity
 @NoArgsConstructor
@@ -59,16 +57,13 @@ public class Member {
         this.password = convertPassword(memberDto.getPassword());
     }
 
-    @OneToMany(mappedBy = "member") //1:N관계이므로 list사용. 1쪽이므로 owner객체 아님
-    private List<Order> orders = new ArrayList<>();
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private String convertPassword(String password) {
         return sha256(password);
     }
 
     //비밀번호 암호화 알고리즘
-    protected static String sha256(String msg) {
+    public static String sha256(String msg) {
         String sha = "";
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

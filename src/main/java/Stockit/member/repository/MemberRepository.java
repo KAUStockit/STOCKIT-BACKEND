@@ -9,15 +9,14 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Repository //스프링 빈으로 등록, JPA 예외를 스프링 기반 예외로 변환
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    List<Member> findMemberByEmailOrderByEmailDesc(String email);
-
-    List<Member> findAllByOrderByEarningRateDesc();
-
-    List<Member> findAllByNickname(String nickname);
-
     List<Member> findAllByEmail(String email);
+    List<Member> findAllByNickname(String nickname);
+    List<Member> findAllByOrderByEarningRateDesc();
+    List<Member> findAllByOrderByNicknameDesc();
+    Optional<Member> findByEmailAndPassword(String email, String password);
 }

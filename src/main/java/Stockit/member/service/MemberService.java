@@ -3,10 +3,20 @@ package Stockit.member.service;
 import Stockit.member.domain.Member;
 import Stockit.member.dto.RankDto;
 import Stockit.member.repository.MemberRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +36,7 @@ public class MemberService {
 
     //중복 회원 검증
     public void validateDuplicateMember(Member member) {
-        List<Member> findMembers = memberRepository.findMemberByEmailOrderByEmailDesc(member.getEmail());
+        List<Member> findMembers = memberRepository.findAllByEmail(member.getEmail());
         if(!findMembers.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
@@ -34,12 +44,12 @@ public class MemberService {
 
     //전체 회원 조회
     public List<Member> findAllMembers() {
-        return memberRepository.findAll();
+        return memberRepository.findAllByOrderByNicknameDesc();
     }
 
     //단일 회원 조회
-    public Optional<Member> findMember(Long idx) {
-        return memberRepository.findById(idx);
+    public Member findMemberByIdx(Long idx) {
+        return memberRepository.findById(idx).orElseThrow(() -> new IllegalArgumentException("멤버가 없습니다."));
     }
 
     //랭킹 조회
@@ -79,4 +89,9 @@ public class MemberService {
         List<Member> members = memberRepository.findAllByEmail(email);
         return members.size() == 0;
     }
+
+//    public Member loadUserByEmail(String email) throws UsernameNotFoundException {
+//        return memberRepository.findByMemberId(username)
+//                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+//    }
 }

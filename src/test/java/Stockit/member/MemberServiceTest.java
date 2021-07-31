@@ -41,7 +41,7 @@ class MemberServiceTest {
         Long saveIdx = member.getIdx();
 
         //then
-        memberRepository.findById(saveIdx).orElseThrow(IllegalStateException::new);
+        memberRepository.findById(saveIdx).orElseThrow(IllegalArgumentException::new);
     }
 
     @Test
@@ -71,12 +71,10 @@ class MemberServiceTest {
         //given
 
         //when
-        Optional<Member> findOptionalMember = memberService.findMember(this.member.getIdx());
+        Member findMember = memberService.findMemberByIdx(member.getIdx());
 
         //then
-        findOptionalMember.ifPresent(findMember -> {
-            Assertions.assertThat(findMember).isEqualTo(this.member);
-        });
+        Assertions.assertThat(findMember.getIdx()).isEqualTo(member.getIdx());
     }
 
     @Test
