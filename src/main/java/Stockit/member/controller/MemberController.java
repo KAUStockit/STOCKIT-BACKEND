@@ -53,16 +53,16 @@ public class MemberController {
 
     @PostMapping(value = "/validate/nickname")
     public ResponseEntity<String> checkDuplicatedNickname(@RequestBody Map<String, String> nicknameMap) {
-        boolean validate = memberService.validateDuplicatedNickname(nicknameMap.get("nickname"));
-        if (validate) return ResponseEntity.status(HttpStatus.OK).body("닉네임 중복검사 통과");
-        else return ResponseEntity.status(HttpStatus.CONFLICT).body("닉네임 중복검사 불통과");
+        boolean validate = memberService.findDuplicatedNickname(nicknameMap.get("nickname"));
+        if (validate) return ResponseEntity.status(HttpStatus.CONFLICT).body("닉네임 중복검사 불통과");
+        else return ResponseEntity.status(HttpStatus.OK).body("닉네임 중복검사 통과");
     }
 
     @PostMapping(value = "/validate/email")
     public ResponseEntity<String> checkDuplicatedEmail(@RequestBody Map<String,String> emailMap) {
-        boolean validate = memberService.validateDuplicatedEmail(emailMap.get("email"));
-        if (validate) return ResponseEntity.status(HttpStatus.OK).body("이메일 중복검사 통과");
-        else return ResponseEntity.status(HttpStatus.CONFLICT).body("닉네임 중복검사 불통과");
+        boolean validate = memberService.findDuplicatedEmail(emailMap.get("email"));
+        if (validate) return ResponseEntity.status(HttpStatus.CONFLICT).body("닉네임 중복검사 불통과");
+        else return ResponseEntity.status(HttpStatus.OK).body("이메일 중복검사 통과");
     }
 
     @GetMapping(value = "/rank_list")

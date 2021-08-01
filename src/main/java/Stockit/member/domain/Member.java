@@ -45,6 +45,9 @@ public class Member {
 
     private Double earningRate = 0.0;
 
+    @NonNull
+    private RoleType role = RoleType.ROLE_USER;
+
     public Member(String name, String nickname, String email, String password) {
         this.name = name;
         this.nickname = nickname;

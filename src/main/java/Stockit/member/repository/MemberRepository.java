@@ -14,9 +14,8 @@ import java.util.Optional;
 @Repository //스프링 빈으로 등록, JPA 예외를 스프링 기반 예외로 변환
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    List<Member> findAllByEmail(String email);
-    List<Member> findAllByNickname(String nickname);
     List<Member> findAllByOrderByEarningRateDesc();
     List<Member> findAllByOrderByNicknameDesc();
-    Optional<Member> findByEmailAndPassword(String email, String password);
+    Boolean existsByEmail(String email);
+    Boolean existsByNickname(String nickname);
 }
