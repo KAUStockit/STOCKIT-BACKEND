@@ -4,14 +4,15 @@ import Stockit.member.domain.Member;
 import Stockit.member.dto.MemberDto;
 import Stockit.member.dto.RankDto;
 import Stockit.member.service.MemberService;
-import Stockit.member.vo.LoginVO;
+import Stockit.member.vo.AuthRequest;
+import Stockit.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,8 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
     @GetMapping(value = "/")
     public ResponseEntity<List<Member>> list() {
@@ -43,22 +46,14 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(member.getIdx());
     }
 
-//    @PostMapping(value = "/login")
-//    public ResponseEntity<String> login(@RequestBody LoginVO loginVO) {
-//        String memberId = loginVO.getEmail();
-//        String memberPassword = loginVO.getPassword();
-//        String token = memberService.login(memberId, memberPassword);
-//        return ResponseEntity.status(HttpStatus.OK).body(token);
-//    }
-
-    @PostMapping(value = "/validate/nickname")
+    @PostMapping(value = "/login/validate/nickname")
     public ResponseEntity<String> checkDuplicatedNickname(@RequestBody Map<String, String> nicknameMap) {
         boolean validate = memberService.findDuplicatedNickname(nicknameMap.get("nickname"));
         if (validate) return ResponseEntity.status(HttpStatus.CONFLICT).body("닉네임 중복검사 불통과");
         else return ResponseEntity.status(HttpStatus.OK).body("닉네임 중복검사 통과");
     }
 
-    @PostMapping(value = "/validate/email")
+    @PostMapping(value = "/login/validate/email")
     public ResponseEntity<String> checkDuplicatedEmail(@RequestBody Map<String,String> emailMap) {
         boolean validate = memberService.findDuplicatedEmail(emailMap.get("email"));
         if (validate) return ResponseEntity.status(HttpStatus.CONFLICT).body("닉네임 중복검사 불통과");
@@ -74,6 +69,18 @@ public class MemberController {
     @PutMapping(value = "/rank_update")
     public void rankUpdate() {
         memberService.updateEarningRate();
+    }
+
+    @PostMapping(value = "/login")
+    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), Member.sha256(authRequest.getPassword())));
+        } catch (Exception ex) {
+            throw new Exception("inavalid username/password");
+        }
+        String generateToken = jwtUtil.generateToken(authRequest.getEmail());
+        return ResponseEntity.status(HttpStatus.OK).body(generateToken);
+
     }
 
 }

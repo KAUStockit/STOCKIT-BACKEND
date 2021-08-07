@@ -1,7 +1,11 @@
 package Stockit.member.domain;
 
 import Stockit.member.dto.MemberDto;
-import lombok.*;
+import com.sun.istack.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,9 +28,11 @@ public class Member {
     private Long idx;
 
     private String name;
+
+    @Column(unique = true)
     private String nickname;
 
-    @Column(name="email", unique = true)
+    @Column(unique = true)
     private String email;
 
     private String password;
@@ -45,8 +51,8 @@ public class Member {
 
     private Double earningRate = 0.0;
 
-    @NonNull
-    private RoleType role = RoleType.ROLE_USER;
+    @NotNull
+    private String role = Role.ROLE_USER.name();
 
     public Member(String name, String nickname, String email, String password) {
         this.name = name;

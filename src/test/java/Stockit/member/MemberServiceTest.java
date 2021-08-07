@@ -8,13 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
 @SpringBootTest //스프링부트 띄우고 테스트(@Autowired 사용 위해)
@@ -64,17 +62,6 @@ class MemberServiceTest {
 
         //then
         Assertions.assertThat(allMembers.size()).isEqualTo(2);
-    }
-
-    @Test
-    public void 특정_멤버_조회() {
-        //given
-
-        //when
-        Member findMember = memberService.findMemberByIdx(member.getIdx());
-
-        //then
-        Assertions.assertThat(findMember.getIdx()).isEqualTo(member.getIdx());
     }
 
     @Test

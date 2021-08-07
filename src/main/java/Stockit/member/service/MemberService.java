@@ -6,6 +6,7 @@ import Stockit.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class MemberService {
     //중복 회원 검증
     public void validateDuplicateMember(Member member) {
         boolean duplicated = findDuplicatedEmail(member.getEmail());
-        if(duplicated) {
+        if (duplicated) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }
@@ -34,11 +35,6 @@ public class MemberService {
     //전체 회원 조회
     public List<Member> findAllMembers() {
         return memberRepository.findAllByOrderByNicknameDesc();
-    }
-
-    //단일 회원 조회
-    public Member findMemberByIdx(Long idx) {
-        return memberRepository.findById(idx).orElseThrow(() -> new IllegalArgumentException("멤버가 없습니다."));
     }
 
     //랭킹 조회
@@ -73,6 +69,7 @@ public class MemberService {
         return memberRepository.existsByNickname(nickname);
     }
 
+    //이메일 중복 검사
     public boolean findDuplicatedEmail(String email) {
         return memberRepository.existsByEmail(email);
     }
