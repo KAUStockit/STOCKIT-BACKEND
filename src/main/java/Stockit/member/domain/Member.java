@@ -16,7 +16,6 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @ToString
 @Entity
 @NoArgsConstructor
@@ -24,7 +23,7 @@ import java.time.LocalDateTime;
 public class Member {
 
     @Id @GeneratedValue
-    @Column(name = "member_id")
+    @Column(name = "member_idx")
     private Long idx;
 
     private String name;
@@ -44,7 +43,7 @@ public class Member {
     private int beforeBalance = 0;
 
     @CreatedDate
-    private LocalDateTime createTime;
+    private LocalDateTime createdTime;
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;

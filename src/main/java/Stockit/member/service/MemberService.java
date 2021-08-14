@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true) //읽기전용
@@ -73,4 +74,7 @@ public class MemberService {
     public boolean findDuplicatedEmail(String email) {
         return memberRepository.existsByEmail(email);
     }
+
+    //로그인시 회원 정보 불러오기
+    public Optional<Member> findMemberInfo(String email) { return memberRepository.findByEmail(email);}
 }

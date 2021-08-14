@@ -5,6 +5,10 @@ import Stockit.member.dto.MemberDto;
 import Stockit.member.dto.RankDto;
 import Stockit.member.service.MemberService;
 import Stockit.member.vo.AuthRequest;
+import Stockit.member.vo.UserInfo;
+import Stockit.response.BasicResponse;
+import Stockit.response.ErrorResponse;
+import Stockit.response.SuccessResponse;
 import Stockit.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,15 +76,14 @@ public class MemberController {
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) throws Exception {
+    public ResponseEntity<BasicResponse> login(@RequestBody AuthRequest authRequest) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), Member.sha256(authRequest.getPassword())));
         } catch (Exception ex) {
-            throw new Exception("inavalid username/password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("로그인에 실패했습니다."));
         }
+        Member member = memberService.findMemberInfo(authRequest.getEmail()).orElseThrow(() -> new NullPointerException("회원 정보가 없습니다."));
         String generateToken = jwtUtil.generateToken(authRequest.getEmail());
-        return ResponseEntity.status(HttpStatus.OK).body(generateToken);
-
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse<>(new UserInfo(member, generateToken),"로그인에 성공했습니다."));
     }
-
 }
