@@ -1,10 +1,9 @@
 package Stockit.member.domain;
 
 import Stockit.member.dto.MemberDto;
-import com.sun.istack.NotNull;
+import Stockit.order.domain.Order;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,6 +13,8 @@ import javax.persistence.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @ToString
@@ -36,11 +37,10 @@ public class Member {
 
     private String password;
 
-    @Setter
-    private int balance = 1000000;
+    private int balance;
 
     //이전 주의 최종 balance
-    private int beforeBalance = 0;
+    private int beforeBalance;
 
     @CreatedDate
     private LocalDateTime createdTime;
@@ -48,16 +48,28 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
-    private Double earningRate = 0.0;
+    private Double earningRate;
 
-    @NotNull
-    private String role = Role.ROLE_USER.name();
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
+
+    @OneToMany(mappedBy = "member")
+    private List<Order> orders = new ArrayList<>();
+    
+    private static final int INITIAL_BALANCE = 1000000; // 첫 회원 잔고
+
+    ////////////////////////////////////////////////////////////////////////////
 
     public Member(String name, String nickname, String email, String password) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.password = convertPassword(password);
+
+        this.role = Role.USER; // 기본은 유저
+        this.beforeBalance = 0;
+        this.balance = INITIAL_BALANCE;
+        this.earningRate = 0d;
     }
 
     public Member(MemberDto memberDto) {
@@ -65,7 +77,8 @@ public class Member {
         this.password = convertPassword(memberDto.getPassword());
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
     private String convertPassword(String password) {
         return sha256(password);
     }

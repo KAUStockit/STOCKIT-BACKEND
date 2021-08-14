@@ -1,6 +1,7 @@
 package Stockit.member.vo;
 
 import Stockit.member.domain.Member;
+import Stockit.member.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,7 +18,7 @@ public class UserInfo {
     private final int beforeBalance;
     private final LocalDateTime createdTime;
     private final double earningRate;
-    private final String role;
+    private final Role role;
     private final String token;
 
     public UserInfo(Member member, String token) {

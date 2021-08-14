@@ -44,10 +44,15 @@ public class MemberController {
     }
 
     @PostMapping(value = "/new")
-    public ResponseEntity<Long> create(@RequestBody MemberDto form) {
-        Member member = new Member(form);
-        memberService.join(member);
-        return ResponseEntity.status(HttpStatus.OK).body(member.getIdx());
+    public ResponseEntity<BasicResponse> create(@RequestBody MemberDto form) {
+        Member member;
+        try {
+            member = new Member(form);
+            memberService.join(member);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("중복검사를 통과하지 못했습니다."));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse<>(member.getIdx(), "회원가입 성공했습니다."));
     }
 
     @PostMapping(value = "/login/validate/nickname")
