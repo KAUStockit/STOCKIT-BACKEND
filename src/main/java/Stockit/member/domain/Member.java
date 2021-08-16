@@ -23,7 +23,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class Member {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_idx")
     private Long idx;
 

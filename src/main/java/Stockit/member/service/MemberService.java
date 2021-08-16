@@ -1,9 +1,11 @@
 package Stockit.member.service;
 
 import Stockit.member.domain.Member;
-import Stockit.member.dto.RankDto;
 import Stockit.member.repository.MemberRepository;
+import Stockit.member.vo.RankVO;
+import Stockit.order.domain.Order;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,34 +37,20 @@ public class MemberService {
 
     //전체 회원 조회
     public List<Member> findAllMembers() {
-        return memberRepository.findAllByOrderByNicknameDesc();
+        return memberRepository.findAll(Sort.by(Sort.Direction.ASC, "idx"));
     }
+
+    //단일 회원 조회
+    public Optional<Member> findMember(Long memberIdx) { return memberRepository.findById(memberIdx);}
 
     //랭킹 조회
-    public List<RankDto> getRankList(){
-        List<Member> m = memberRepository.findAllByOrderByEarningRateDesc();
-        List<RankDto> rankDtos = new ArrayList<>();
-        for(Member one_member: m){
-            String email = one_member.getEmail();
-            String nickname = one_member.getNickname();
-            double earningRate = one_member.getEarningRate();
-            rankDtos.add(new RankDto(email,nickname,earningRate));
-            System.out.println(email + nickname + earningRate);
+    public List<RankVO> getRankList(){
+        List<Member> members = memberRepository.findAll(Sort.by(Sort.Direction.DESC, "earningRate"));
+        List<RankVO> ranking = new ArrayList<>();
+        for (Member member: members) {
+            ranking.add(new RankVO(member));
         }
-        return rankDtos;
-    }
-
-    //수익률 업데이트
-    public void updateEarningRate(){
-        //logic1 : member에서 balance를 가져옴. 그 다음에 balance와 이전 금액을 빼고 백분률로 나눠줌
-        List<Member> member_list = memberRepository.findAll();
-        for(Member m : member_list){
-            double curBalance = (double) m.getBalance();
-            double befBalance = (double) m.getBeforeBalance();
-            double curEarningRate = curBalance - befBalance / 100;
-
-            //logic2 : 수정된 earning_rate를 해당 유저 earning_rate로 업데이트
-        }
+        return ranking;
     }
 
     //닉네임 중복 검사
@@ -77,4 +65,9 @@ public class MemberService {
 
     //로그인시 회원 정보 불러오기
     public Optional<Member> findMemberInfo(String email) { return memberRepository.findByEmail(email);}
+
+    //주문 조회
+    public List<Order> findAllOrders(Long memberIdx) {
+        return memberRepository.findById(memberIdx).orElseThrow(() -> new IllegalArgumentException("멤버가 없습니다.")).getOrders();
+    }
 }

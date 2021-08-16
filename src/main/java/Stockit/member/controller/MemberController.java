@@ -2,10 +2,11 @@ package Stockit.member.controller;
 
 import Stockit.member.domain.Member;
 import Stockit.member.dto.MemberDto;
-import Stockit.member.dto.RankDto;
 import Stockit.member.service.MemberService;
 import Stockit.member.vo.AuthRequest;
+import Stockit.member.vo.RankVO;
 import Stockit.member.vo.UserInfo;
+import Stockit.order.domain.Order;
 import Stockit.response.BasicResponse;
 import Stockit.response.ErrorResponse;
 import Stockit.response.SuccessResponse;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,17 +32,14 @@ public class MemberController {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
+    //모든 멤버 조회
     @GetMapping(value = "/")
     public ResponseEntity<List<Member>> list() {
         List<Member> members = memberService.findAllMembers();
         return ResponseEntity.status(HttpStatus.OK).body(members);
     }
 
-    @GetMapping(value = "/new")
-    public void createForm(Model model) {
-        log.info("member join form");
-    }
-
+    //멤버 생성
     @PostMapping(value = "/new")
     public ResponseEntity<BasicResponse> create(@RequestBody MemberDto form) {
         Member member;
@@ -55,6 +52,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse<>(member.getIdx(), "회원가입 성공했습니다."));
     }
 
+    //닉네임 중복 검사
     @PostMapping(value = "/login/validate/nickname")
     public ResponseEntity<String> checkDuplicatedNickname(@RequestBody Map<String, String> nicknameMap) {
         boolean validate = memberService.findDuplicatedNickname(nicknameMap.get("nickname"));
@@ -62,6 +60,7 @@ public class MemberController {
         else return ResponseEntity.status(HttpStatus.OK).body("닉네임 중복검사 통과");
     }
 
+    //이메일 중복 검사
     @PostMapping(value = "/login/validate/email")
     public ResponseEntity<String> checkDuplicatedEmail(@RequestBody Map<String,String> emailMap) {
         boolean validate = memberService.findDuplicatedEmail(emailMap.get("email"));
@@ -69,17 +68,15 @@ public class MemberController {
         else return ResponseEntity.status(HttpStatus.OK).body("이메일 중복검사 통과");
     }
 
+    //랭킹 조회
     @GetMapping(value = "/rank_list")
-    public ResponseEntity<List<RankDto>> getRankList() {
-        List<RankDto> rankList = memberService.getRankList();
+    public ResponseEntity<List<RankVO>> getRankList() {
+        List<RankVO> rankList = memberService.getRankList();
         return ResponseEntity.status(HttpStatus.OK).body(rankList);
     }
 
-    @PutMapping(value = "/rank_update")
-    public void rankUpdate() {
-        memberService.updateEarningRate();
-    }
 
+    //로그인
     @PostMapping(value = "/login")
     public ResponseEntity<BasicResponse> login(@RequestBody AuthRequest authRequest) throws Exception {
         try {
@@ -90,5 +87,11 @@ public class MemberController {
         Member member = memberService.findMemberInfo(authRequest.getEmail()).orElseThrow(() -> new NullPointerException("회원 정보가 없습니다."));
         String generateToken = jwtUtil.generateToken(authRequest.getEmail());
         return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse<>(new UserInfo(member, generateToken),"로그인에 성공했습니다."));
+    }
+
+    //주문 조회
+    @GetMapping(value = "/{memberIdx}/orders")
+    public ResponseEntity<List<Order>> getOrders(@PathVariable Long memberIdx) {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.findAllOrders(memberIdx));
     }
 }
