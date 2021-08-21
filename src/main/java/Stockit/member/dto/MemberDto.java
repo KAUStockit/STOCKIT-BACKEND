@@ -1,7 +1,7 @@
 package Stockit.member.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data

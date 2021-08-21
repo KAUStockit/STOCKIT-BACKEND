@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url : jdbc:mariadb://stockitdbinstance.cdhtq3r6vz3v.ap-northeast-2.rds.amazonaws.com:3306/develop
+    username :
+    password :
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+    show-sql: true
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    properties:
+      hibernate:
+        format-sql: true
+
+logging:
+  level:
+    org:
+      hibernate.SQL: debug
+      springframework.web: debug
