@@ -26,17 +26,17 @@ public class StockController {
     public ResponseEntity<StockVO> create(@RequestBody StockDto form) {
         Stock stock = new Stock(form);
         Long stockCode = stockService.createNewStock(stock);
-        return ResponseEntity.status(HttpStatus.OK).body(new StockVO(stockCode, stock.getStockName(), stock.getPrice(), true));
+        return ResponseEntity.status(HttpStatus.OK).body(new StockVO(stockCode, stock.getStockName(), stock.getPrice(), stock.getDescription(), stock.getCategory(), true));
     }
 
     //모든 주식 조회
-    @GetMapping(value = "/list")
+    @GetMapping(value = "/info/list")
     public ResponseEntity<List<Stock>> stockList() {
         return ResponseEntity.status(HttpStatus.OK).body(stockService.findAllStocks());
     }
 
     //주식 하나 조회
-    @GetMapping(value = "/{stockCode}")
+    @GetMapping(value = "/info/{stockCode}")
     public ResponseEntity<Stock> getStockInfo(@PathVariable Long stockCode) {
         return ResponseEntity.status(HttpStatus.OK).body(stockService.findStock(stockCode).orElseThrow(() -> new IllegalArgumentException("해당 주식이 없습니다.")));
     }

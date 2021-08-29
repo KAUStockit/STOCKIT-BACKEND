@@ -8,4 +8,6 @@ import lombok.NoArgsConstructor;
 public class StockDto {
     private String stockName;
     private int price;
+    private String description;
+    private String category;
 }

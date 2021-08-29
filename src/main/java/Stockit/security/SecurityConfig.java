@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/api/members/login/**").permitAll()
                 .antMatchers("/api/members/new").permitAll()
-                .antMatchers("/api/stocks/list").permitAll()
+                .antMatchers("/api/stocks/info/**").permitAll()
                 .anyRequest().authenticated().and()
                 .cors().and()
                 .exceptionHandling().and()
