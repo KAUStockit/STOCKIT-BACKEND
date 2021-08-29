@@ -18,6 +18,8 @@ import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 /*
 참고
 https://oingdaddy.tistory.com/206
@@ -34,6 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 
     @Value("${client.max_sec}") private long MAX_AGE_SECS;
     @Value("${client.url}") private String clientUrl;
+    @Value("${client.url2}") private String clientUrl2;
+    @Value("${client.url3}") private String clientUrl3;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -58,8 +62,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/api/members/login/**").permitAll()
                 .antMatchers("/api/members/new").permitAll()
+                .antMatchers("/api/stocks/list").permitAll()
                 .anyRequest().authenticated().and()
-                .cors().and()
+                .cors(withDefaults())
                 .exceptionHandling().and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -69,8 +74,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(clientUrl)
-                .allowedMethods("*")
+                .allowedOrigins(clientUrl, clientUrl2, clientUrl3)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(MAX_AGE_SECS);

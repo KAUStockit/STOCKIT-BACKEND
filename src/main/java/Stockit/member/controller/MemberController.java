@@ -20,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -53,17 +52,17 @@ public class MemberController {
     }
 
     //닉네임 중복 검사
-    @PostMapping(value = "/login/validate/nickname")
-    public ResponseEntity<String> checkDuplicatedNickname(@RequestBody Map<String, String> nicknameMap) {
-        boolean validate = memberService.findDuplicatedNickname(nicknameMap.get("nickname"));
+    @GetMapping(value = "/login/validate/nickname")
+    public ResponseEntity<String> checkDuplicatedNickname(@RequestParam String nickname) {
+        boolean validate = memberService.findDuplicatedNickname(nickname);
         if (validate) return ResponseEntity.status(HttpStatus.CONFLICT).body("닉네임 중복검사 불통과");
         else return ResponseEntity.status(HttpStatus.OK).body("닉네임 중복검사 통과");
     }
 
     //이메일 중복 검사
-    @PostMapping(value = "/login/validate/email")
-    public ResponseEntity<String> checkDuplicatedEmail(@RequestBody Map<String,String> emailMap) {
-        boolean validate = memberService.findDuplicatedEmail(emailMap.get("email"));
+    @GetMapping(value = "/login/validate/email")
+    public ResponseEntity<String> checkDuplicatedEmail(@RequestParam String email) {
+        boolean validate = memberService.findDuplicatedEmail(email);
         if (validate) return ResponseEntity.status(HttpStatus.CONFLICT).body("닉네임 중복검사 불통과");
         else return ResponseEntity.status(HttpStatus.OK).body("이메일 중복검사 통과");
     }

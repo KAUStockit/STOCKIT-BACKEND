@@ -30,7 +30,7 @@ public class StockController {
     }
 
     //모든 주식 조회
-    @GetMapping(value = "/")
+    @GetMapping(value = "/list")
     public ResponseEntity<List<Stock>> stockList() {
         return ResponseEntity.status(HttpStatus.OK).body(stockService.findAllStocks());
     }
