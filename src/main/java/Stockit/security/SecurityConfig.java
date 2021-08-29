@@ -16,9 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 /*
 참고
@@ -29,6 +28,7 @@ https://sowells.tistory.com/170
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
+@EnableWebMvc
 public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer{
 
     private final CustomUserDetailsService userDetailsService;
@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .antMatchers("/api/members/new").permitAll()
                 .antMatchers("/api/stocks/list").permitAll()
                 .anyRequest().authenticated().and()
-                .cors(withDefaults())
+                .cors().and()
                 .exceptionHandling().and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
