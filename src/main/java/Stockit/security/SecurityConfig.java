@@ -3,7 +3,6 @@ package Stockit.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,10 +13,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 /*
 참고
@@ -25,19 +27,15 @@ https://oingdaddy.tistory.com/206
 https://oddpoet.net/blog/2017/04/27/cors-with-spring-security/
 https://sowells.tistory.com/170
  */
-@Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableWebMvc
-public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer{
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomUserDetailsService userDetailsService;
     private final JwtFilter jwtFilter;
 
     @Value("${client.max_sec}") private long MAX_AGE_SECS;
-    @Value("${client.url}") private String clientUrl;
-    @Value("${client.url2}") private String clientUrl2;
-    @Value("${client.url3}") private String clientUrl3;
+    @Value("${client.urls}") private List<String> clientUrls;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -58,26 +56,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .cors().configurationSource(corsConfigurationSource()).and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/api/members/login/**").permitAll()
-                .antMatchers("/api/members/new").permitAll()
-                .antMatchers("/api/stocks/info/**").permitAll()
+                .antMatchers(
+                        "/api/members/login/**",
+                        "/api/members/new",
+                        "/api/stocks/info/**"
+                ).permitAll()
                 .anyRequest().authenticated().and()
-                .cors().and()
-                .exceptionHandling().and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins(clientUrl, clientUrl2, clientUrl3)
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(MAX_AGE_SECS);
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(clientUrls);
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","DELETE","PUT","PATCH","OPTIONS"));
+        configuration.setMaxAge(MAX_AGE_SECS);
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
