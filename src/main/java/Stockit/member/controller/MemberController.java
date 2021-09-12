@@ -1,7 +1,5 @@
 package Stockit.member.controller;
 
-import Stockit.exception.LoginFailedException;
-import Stockit.jwt.token.JwtAuthToken;
 import Stockit.member.domain.Member;
 import Stockit.member.dto.MemberDto;
 import Stockit.member.service.MemberService;
@@ -20,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -78,15 +75,9 @@ public class MemberController {
 
     //로그인
     @PostMapping(value = "/login")
-    public ResponseEntity<BasicResponse> login(@RequestBody AuthRequest authRequest) {
-        final Optional<Member> optionalMember = memberService.login(authRequest);
-        if (optionalMember.isPresent()) {
-            JwtAuthToken jwtAuthToken = (JwtAuthToken) memberService.createAuthToken(authRequest.getEmail(), optionalMember.get().getRole());
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new SuccessResponse<>(HttpStatus.OK.value(), "로그인 성공", new UserInfo(optionalMember.get(), jwtAuthToken.getToken())));
-        } else {
-            throw new LoginFailedException();
-        }
+    public ResponseEntity<UserInfo> login(@RequestBody AuthRequest authRequest) {
+        final UserInfo userInfo = memberService.login(authRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(userInfo);
     }
 
     //주문 조회

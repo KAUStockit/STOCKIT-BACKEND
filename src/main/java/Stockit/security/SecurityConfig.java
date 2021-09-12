@@ -1,10 +1,7 @@
 package Stockit.security;
 
-import Stockit.jwt.CustomJwtConfigurer;
-import Stockit.jwt.handler.JwtAccessDeniedHandler;
-import Stockit.jwt.handler.JwtAuthenticationEntryPoint;
-import Stockit.jwt.provider.JwtAuthTokenProvider;
-import Stockit.jwt.service.CustomUserDetailsService;
+import Stockit.jwt.CustomUserDetailsService;
+import Stockit.jwt.JwtFilter;
 import Stockit.member.domain.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
@@ -38,9 +36,7 @@ https://sowells.tistory.com/170
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomUserDetailsService userDetailsService;
-    private final JwtAuthTokenProvider jwtAuthTokenProvider;
-    private final JwtAuthenticationEntryPoint authenticationErrorHandler;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtFilter jwtFilter;
 
     @Value("${client.max_sec}") private long MAX_AGE_SECS;
     @Value("${client.urls}") private List<String> clientUrls;
@@ -55,15 +51,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean(name = "authenticationManager")
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .cors().configurationSource(corsConfigurationSource()).and()
-
-                .exceptionHandling()
-                .authenticationEntryPoint(authenticationErrorHandler)
-                .accessDeniedHandler(jwtAccessDeniedHandler).and()
 
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
@@ -77,17 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
-                .apply(customJwtConfigurer());
-    }
-
-    private CustomJwtConfigurer customJwtConfigurer() {
-        return new CustomJwtConfigurer(jwtAuthTokenProvider);
-    }
-
-    @Bean(name = "authenticationManager")
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
