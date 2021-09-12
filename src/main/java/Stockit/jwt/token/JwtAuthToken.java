@@ -19,7 +19,7 @@ public class JwtAuthToken implements AuthToken<Claims> {
     private static final String AUTHORITIES_KEY = "role";
 
     public JwtAuthToken(String token, Key key) {
-        this.token = token;
+        this.token = token.split(" ")[1];
         this.key = key;
     }
 
