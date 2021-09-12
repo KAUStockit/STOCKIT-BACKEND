@@ -1,5 +1,7 @@
 package Stockit.member.controller;
 
+import Stockit.exception.LoginFailedException;
+import Stockit.jwt.token.JwtAuthToken;
 import Stockit.member.domain.Member;
 import Stockit.member.dto.MemberDto;
 import Stockit.member.service.MemberService;
@@ -10,16 +12,15 @@ import Stockit.order.domain.Order;
 import Stockit.response.BasicResponse;
 import Stockit.response.ErrorResponse;
 import Stockit.response.SuccessResponse;
-import Stockit.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -28,8 +29,7 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
-    private final JwtUtil jwtUtil;
-    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
     //모든 멤버 조회
     @GetMapping(value = "/")
@@ -43,12 +43,13 @@ public class MemberController {
     public ResponseEntity<BasicResponse> create(@RequestBody MemberDto form) {
         Member member;
         try {
+            form.setPassword(passwordEncoder.encode(form.getPassword()));
             member = new Member(form);
             memberService.join(member);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("중복검사를 통과하지 못했습니다."));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(),"중복검사를 통과하지 못했습니다."));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse<>(member.getIdx(), "회원가입 성공했습니다."));
+        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse<>(HttpStatus.OK.value(), "회원가입 성공했습니다.", member.getIdx()));
     }
 
     //닉네임 중복 검사
@@ -77,15 +78,15 @@ public class MemberController {
 
     //로그인
     @PostMapping(value = "/login")
-    public ResponseEntity<BasicResponse> login(@RequestBody AuthRequest authRequest) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), Member.sha256(authRequest.getPassword())));
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("로그인에 실패했습니다."));
+    public ResponseEntity<BasicResponse> login(@RequestBody AuthRequest authRequest) {
+        final Optional<Member> optionalMember = memberService.login(authRequest);
+        if (optionalMember.isPresent()) {
+            JwtAuthToken jwtAuthToken = (JwtAuthToken) memberService.createAuthToken(authRequest.getEmail(), optionalMember.get().getRole());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new SuccessResponse<>(HttpStatus.OK.value(), "로그인 성공", new UserInfo(optionalMember.get(), jwtAuthToken.getToken())));
+        } else {
+            throw new LoginFailedException();
         }
-        Member member = memberService.findMemberInfo(authRequest.getEmail()).orElseThrow(() -> new NullPointerException("회원 정보가 없습니다."));
-        String generateToken = jwtUtil.generateToken(authRequest.getEmail());
-        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse<>(new UserInfo(member, generateToken),"로그인에 성공했습니다."));
     }
 
     //주문 조회
