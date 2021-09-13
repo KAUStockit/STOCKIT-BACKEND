@@ -1,7 +1,11 @@
 package Stockit.response;
 
-public class ErrorResponse extends BasicResponse {
-    public ErrorResponse(int statusCode, String message) {
-        super(statusCode, message);
-    }
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class ErrorResponse implements BasicResponse {
+    int statusCode;
+    String message;
 }

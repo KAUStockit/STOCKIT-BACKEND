@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -30,8 +31,9 @@ public class MemberController {
     @GetMapping(value = "/list")
     public ResponseEntity<BasicResponse> list() {
         List<Member> members = memberService.findAllMembers();
+        final List<UserInfo> userInfoList = members.stream().map(UserInfo::new).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "멤버 리스트", members));
+                new SuccessResponse<>(HttpStatus.OK.value(), "멤버 리스트", userInfoList));
     }
 
     //멤버 생성

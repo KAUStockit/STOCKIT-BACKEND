@@ -26,4 +26,10 @@ public class UserInfo {
                 member.getBalance(), member.getBeforeBalance(), member.getCreatedTime(),
                 member.getEarningRate(), member.getRole(), token);
     }
+
+    public UserInfo(Member member) {
+        this(member.getIdx(), member.getName(), member.getNickname(), member.getEmail(),
+                member.getBalance(), member.getBeforeBalance(), member.getCreatedTime(),
+                member.getEarningRate(), member.getRole(), "");
+    }
 }
