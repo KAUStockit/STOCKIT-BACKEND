@@ -75,11 +75,8 @@ public class MemberService {
 
     //로그인시 회원 정보 불러오기
     public UserInfo login(AuthRequest authRequest) {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
+
         Optional<Member> optionalMember = memberRepository.findByEmail(authRequest.getEmail());
         String generatedToken = jwtUtil.generateToken(authRequest.getEmail());
         final Member member = optionalMember.orElseThrow(IllegalArgumentException::new);
