@@ -24,12 +24,13 @@ public class Order {
     private int stockOrderPrice; //주문 가격
     private int stockOrderCount; //주문 수량
     private int completedCount; //체결 수량
+    private double completedPrice; //체결 가격 평균
 
     @CreatedDate
     private LocalDateTime stockOrderedDate; //주문 시각
 
     private String status; //미체결중인 것이 있는지 여부
-    private String type;
+    private String type; //Buy, Sell
 
     @ManyToOne //N쪽이므로 owner객체, 양방향 N:1
     @JoinColumn(name = "member_idx")
@@ -46,6 +47,7 @@ public class Order {
         this.stockOrderPrice = orderDto.getStockOrderPrice();
         this.stockOrderCount = orderDto.getStockOrderCount();
         this.completedCount = 0;
+        this.completedPrice = 0.0;
         this.status = OrderStatus.NOT_ACCEPTED.name();
         this.type = orderDto.getOrderType();
     }

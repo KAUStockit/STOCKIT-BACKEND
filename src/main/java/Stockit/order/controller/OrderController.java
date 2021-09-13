@@ -23,7 +23,7 @@ public class OrderController {
     //주문 생성
     @PostMapping(value = "/{memberIdx}/{stockCode}/new")
     public ResponseEntity<BasicResponse> createOrder(@PathVariable Long memberIdx, @PathVariable Long stockCode, @RequestBody OrderDto orderDto) {
-        final Order order = orderService.createOrder(memberIdx, stockCode, orderDto);//미체결 주문 생성
+        Order order = orderService.createOrder(memberIdx, stockCode, orderDto);//미체결 주문 생성
         orderService.executeOrder(order);
 
         return ResponseEntity.status(HttpStatus.OK).body(

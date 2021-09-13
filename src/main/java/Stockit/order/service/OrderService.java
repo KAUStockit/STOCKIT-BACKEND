@@ -39,7 +39,7 @@ public class OrderService {
     @Transactional
     public void executeOrder(Order order) {
         final Stock stock = order.getStock();
-        final List<Order> sortedOrderList = this.getSortedOrderList(stock, order.getType());
+        final List<Order> sortedOrderList = this.getSortedOrderList(stock, order.getType(), order.getStockOrderPrice());
         for (Order counterOrder: sortedOrderList) {
             // 미체결, 반대 타입
             final boolean checkOrder = counterOrder != order &&
@@ -47,50 +47,45 @@ public class OrderService {
                     !counterOrder.getType().equals(order.getType());
 
             if (checkOrder) {
-                final boolean isFinishedTrade = executeTrade(order, counterOrder);
-                if (isFinishedTrade) break;
+                final boolean isTradeFinished = executeTrade(order, counterOrder);
+                if (isTradeFinished) break;
             }
         }
     }
 
     private boolean executeTrade(Order order, Order counterOrder) {
         int restCounterOrderCount = counterOrder.getStockOrderCount() - counterOrder.getCompletedCount();
-        // 이번에 잔여 거래 모두 체결 가능
-        if (order.getStockOrderCount() <= restCounterOrderCount) {
-            //체결 수량 반영
-            orderRepository.updateCompletedOrderCount(counterOrder.getOrderIdx(), order.getStockOrderCount());
-            orderRepository.updateCompletedOrderCount(order.getOrderIdx(), order.getStockOrderCount());
+        final boolean isOrderBiggerThanEqualRestCounterOrder = order.getStockOrderCount() >= restCounterOrderCount;
+        Order bigOrder = isOrderBiggerThanEqualRestCounterOrder ? order : counterOrder;
+        Order smallOrder = isOrderBiggerThanEqualRestCounterOrder ? counterOrder : order;
+        int tradeCount = isOrderBiggerThanEqualRestCounterOrder ?restCounterOrderCount : order.getStockOrderCount();
 
-            //잔고 업데이트
-            int price = order.getStockOrderPrice() * order.getStockOrderCount();
-            if (order.getType().equals(OrderType.Sell.name())) price = price * -1;
-            memberRepository.updateBalance(order.getMember().getIdx(), -price);
-            memberRepository.updateBalance(counterOrder.getMember().getIdx(), price);
+        //체결 수량 반영
+        orderRepository.updateCompletedOrderCount(counterOrder.getOrderIdx(), tradeCount);
+        orderRepository.updateCompletedOrderCount(order.getOrderIdx(), tradeCount);
 
-            //전체 체결/미체결 반영
-            orderRepository.updateOrderStatus(order.getOrderIdx(), OrderStatus.Accepted.name());
-            if (order.getStockOrderCount() == restCounterOrderCount) orderRepository.updateOrderStatus(counterOrder.getOrderIdx(), OrderStatus.Accepted.name());
-            return true;
-        } else {
-            //체결 수량 반영
-            orderRepository.updateCompletedOrderCount(counterOrder.getOrderIdx(), counterOrder.getStockOrderCount());
-            orderRepository.updateCompletedOrderCount(order.getOrderIdx(), counterOrder.getStockOrderCount());
+        //체결 평균 가격 업데이트
+        orderRepository.updateCompletedPrice(order.getOrderIdx(), order.getStockOrderPrice());
+        double thisTradeTotalPrice = tradeCount * order.getStockOrderPrice();
+        double counterOrderCompletedPriceSum = counterOrder.getCompletedPrice() * counterOrder.getCompletedCount();
+        double counterOrderNewCompletedPrice = (counterOrderCompletedPriceSum + thisTradeTotalPrice) / (counterOrder.getCompletedCount() + tradeCount);
+        orderRepository.updateCompletedPrice(counterOrder.getOrderIdx(), counterOrderNewCompletedPrice);
 
-            //잔고 업데이트
-            int price = counterOrder.getStockOrderPrice() * counterOrder.getStockOrderCount();
-            if (order.getType().equals(OrderType.Sell.name())) price = price * -1;
-            memberRepository.updateBalance(order.getMember().getIdx(), -price);
-            memberRepository.updateBalance(counterOrder.getMember().getIdx(), price);
+        //잔고 업데이트
+        int price = order.getStockOrderPrice() * order.getStockOrderCount();
+        if (order.getType().equals(OrderType.Sell.name())) price = price * -1;
+        memberRepository.updateBalance(order.getMember().getIdx(), -price);
+        memberRepository.updateBalance(counterOrder.getMember().getIdx(), price);
 
-            //전체 체결/미체결 반영
-            orderRepository.updateOrderStatus(counterOrder.getOrderIdx(), OrderStatus.Accepted.name());
-            if (order.getStockOrderCount() == restCounterOrderCount) orderRepository.updateOrderStatus(order.getOrderIdx(), OrderStatus.Accepted.name());
-            return false;
-        }
+        //전체 체결/미체결 반영
+        orderRepository.updateOrderStatus(smallOrder.getOrderIdx(), OrderStatus.ACCEPTED.name());
+        if (bigOrder.getStockOrderCount() == bigOrder.getCompletedCount() + tradeCount) orderRepository.updateOrderStatus(bigOrder.getOrderIdx(), OrderStatus.ACCEPTED.name());
+
+        return isOrderBiggerThanEqualRestCounterOrder;
     }
 
-    private List<Order> getSortedOrderList(Stock stock, String type) {
-        if (type.equals(OrderType.Buy.name())) return orderRepository.findAllByStockIsAndTypeOrderByStockOrderPriceAscStockOrderedDate(stock, OrderType.Sell.name());
-        else return orderRepository.findAllByStockIsAndTypeOrderByStockOrderPriceDescStockOrderedDate(stock, OrderType.Buy.name());
+    private List<Order> getSortedOrderList(Stock stock, String type, int price) {
+        if (type.equals(OrderType.Buy.name())) return orderRepository.findAllByStockIsAndTypeAndStatusAndStockOrderPriceLessThanEqualOrderByStockOrderPriceAscStockOrderedDate(stock, OrderType.Sell.name(), OrderStatus.NOT_ACCEPTED.name(), price);
+        else return orderRepository.findAllByStockIsAndTypeAndStatusAndStockOrderPriceGreaterThanEqualOrderByStockOrderPriceDescStockOrderedDate(stock, OrderType.Buy.name(), OrderStatus.NOT_ACCEPTED.name(), price);
     }
 }
