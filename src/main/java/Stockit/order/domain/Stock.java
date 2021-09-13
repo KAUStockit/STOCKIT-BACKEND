@@ -32,7 +32,7 @@ public class Stock {
 
     private String category; //주식 분류
 
-   @CreatedDate
+    @CreatedDate
     private LocalDateTime stockCreatedDate;
 
     ///////////////////////////////////////

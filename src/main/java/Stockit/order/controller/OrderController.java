@@ -1,5 +1,6 @@
 package Stockit.order.controller;
 
+import Stockit.order.domain.Order;
 import Stockit.order.dto.OrderDto;
 import Stockit.order.service.OrderService;
 import Stockit.response.BasicResponse;
@@ -22,8 +23,10 @@ public class OrderController {
     //주문 생성
     @PostMapping(value = "/{memberIdx}/{stockCode}/new")
     public ResponseEntity<BasicResponse> createOrder(@PathVariable Long memberIdx, @PathVariable Long stockCode, @RequestBody OrderDto orderDto) {
-        Long orderIdx = orderService.createOrder(memberIdx, stockCode, orderDto);
+        final Order order = orderService.createOrder(memberIdx, stockCode, orderDto);//미체결 주문 생성
+        orderService.executeOrder(order);
+
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "주문 생성", orderIdx));
+                new SuccessResponse<>(HttpStatus.OK.value(), "주문 생성", order.getOrderIdx()));
     }
 }

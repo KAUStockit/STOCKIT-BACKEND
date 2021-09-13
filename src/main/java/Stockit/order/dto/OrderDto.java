@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 public class OrderDto {
     private int stockOrderPrice;
     private int stockOrderCount;
-
+    private String orderType;
 }

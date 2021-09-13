@@ -23,12 +23,13 @@ public class Order {
 
     private int stockOrderPrice; //주문 가격
     private int stockOrderCount; //주문 수량
+    private int completedCount; //체결 수량
 
     @CreatedDate
     private LocalDateTime stockOrderedDate; //주문 시각
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status; //미체결중인 것이 있는지 여부
+    private String status; //미체결중인 것이 있는지 여부
+    private String type;
 
     @ManyToOne //N쪽이므로 owner객체, 양방향 N:1
     @JoinColumn(name = "member_idx")
@@ -44,7 +45,9 @@ public class Order {
         this.stock = stock;
         this.stockOrderPrice = orderDto.getStockOrderPrice();
         this.stockOrderCount = orderDto.getStockOrderCount();
-        this.status = OrderStatus.NOT_ACCEPTED;
+        this.completedCount = 0;
+        this.status = OrderStatus.NOT_ACCEPTED.name();
+        this.type = orderDto.getOrderType();
     }
     //////////////////////////////////////
     public static Order createOrder(Member member, Stock stock, OrderDto orderDto) {
