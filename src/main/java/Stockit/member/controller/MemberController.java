@@ -4,8 +4,10 @@ import Stockit.member.domain.Member;
 import Stockit.member.dto.MemberDto;
 import Stockit.member.service.MemberService;
 import Stockit.member.vo.AuthRequest;
+import Stockit.member.vo.MemberOrderInfo;
 import Stockit.member.vo.RankVO;
 import Stockit.member.vo.UserInfo;
+import Stockit.order.domain.Order;
 import Stockit.response.BasicResponse;
 import Stockit.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -89,7 +93,15 @@ public class MemberController {
     //주문 조회
     @GetMapping(value = "/{memberIdx}/orders")
     public ResponseEntity<BasicResponse> getOrders(@PathVariable Long memberIdx) {
+        final List<Order> allOrders = memberService.findAllOrders(memberIdx);
+        final List<MemberOrderInfo> memberOrderInfoList = allOrders.stream().map(MemberOrderInfo::new).collect(Collectors.toList());
+        final AbstractMap<String, Object> memberOrderData = new ConcurrentHashMap<>();
+        final Member member = memberService.findMember(memberIdx).orElseThrow(IllegalArgumentException::new);
+        memberOrderData.put("orders", memberOrderInfoList);
+        memberOrderData.put("member", new UserInfo(member));
+
+
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "주문 조회", memberService.findAllOrders(memberIdx)));
+                new SuccessResponse<>(HttpStatus.OK.value(), "주문 조회", memberOrderData));
     }
 }
