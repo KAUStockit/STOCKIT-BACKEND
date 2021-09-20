@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @AllArgsConstructor
 @Getter
@@ -23,7 +24,7 @@ public class UserInfo {
 
     public UserInfo(Member member, String token) {
         this(member.getIdx(), member.getName(), member.getNickname(), member.getEmail(),
-                member.getBalance(), member.getBeforeBalance(), member.getCreatedTime(),
+                member.getBalance(), member.getBeforeBalance(), member.getCreatedTime().truncatedTo(ChronoUnit.MILLIS),
                 member.getEarningRate(), member.getRole(), token);
     }
 
