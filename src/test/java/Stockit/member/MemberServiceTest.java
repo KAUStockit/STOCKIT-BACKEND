@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 
-@SpringBootTest //스프링부트 띄우고 테스트(@Autowired 사용 위해)
+@SpringBootTest
 @TestPropertySource("classpath:application-test.properties")
 class MemberServiceTest {
 
