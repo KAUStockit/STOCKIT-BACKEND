@@ -2,7 +2,6 @@ package Stockit.security;
 
 import Stockit.jwt.CustomUserDetailsService;
 import Stockit.jwt.JwtFilter;
-import Stockit.member.domain.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,13 +64,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers(
-                        "/api/members/login/**",
-                        "/api/members/new",
-                        "/api/stocks/info/**"
-                ).permitAll()
-                .antMatchers("api/members/admin").hasAnyAuthority(Role.ADMIN.name())
-                .anyRequest().authenticated().and()
+//                .antMatchers(
+//                        "/api/members/login/**",
+//                        "/api/members/new",
+//                        "/api/stocks/info/**"
+//                ).permitAll()
+//                .antMatchers("api/members/admin").hasAnyAuthority(Role.ADMIN.name())
+//                .anyRequest().authenticated().and()
+                .anyRequest().permitAll().and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
