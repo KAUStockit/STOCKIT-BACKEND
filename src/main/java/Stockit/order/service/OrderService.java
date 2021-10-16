@@ -81,6 +81,9 @@ public class OrderService {
         orderRepository.updateOrderStatus(smallOrder.getOrderIdx(), OrderStatus.ACCEPTED.name());
         if (bigOrder.getStockOrderCount() == bigOrder.getCompletedCount() + tradeCount) orderRepository.updateOrderStatus(bigOrder.getOrderIdx(), OrderStatus.ACCEPTED.name());
 
+        //주식 가격 업데이트
+        order.getStock().setPrice(Math.abs(price));
+
         return isOrderBiggerThanEqualRestCounterOrder;
     }
 
