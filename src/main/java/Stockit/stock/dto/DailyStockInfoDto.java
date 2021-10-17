@@ -1,19 +1,19 @@
 package Stockit.stock.dto;
 
-import Stockit.stock.domain.DailyStockInfoId;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class DailyStockInfoDto {
-    private DailyStockInfoId id;
+
+    private Long stockCode;
     private String stockName;
     private int price;
-
-    public DailyStockInfoDto(StockDto stock) {
-        this.id = new DailyStockInfoId(stock.getStockCode());
-        this.stockName = stock.getStockName();
-        this.price = stock.getPrice();
-    }
+    private String description;
+    private String category;
+    private boolean isActive;
+    private double percentage;
 }

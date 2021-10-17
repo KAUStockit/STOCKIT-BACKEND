@@ -1,6 +1,6 @@
 package Stockit.stock.controller;
 
-import Stockit.stock.dto.StockDto;
+import Stockit.stock.dto.DailyStockInfoDto;
 import Stockit.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -43,10 +42,10 @@ public class StreamingController {
     @Scheduled(fixedRate = 1000)
     public void publishStockList() {
         Set<String> deadIds = new HashSet<>();
-        final List<StockDto> stockList = stockService.findAllStocks().stream().map(StockDto::new).collect(Collectors.toList());
+        final List<DailyStockInfoDto> allStocksWithPercent = stockService.findAllStocksWithPercent();
         CLIENTS.forEach((userId, emitter) -> {
             try {
-                emitter.send(stockList, MediaType.APPLICATION_JSON);
+                emitter.send(allStocksWithPercent, MediaType.APPLICATION_JSON);
             } catch (Exception e) {
                 deadIds.add(userId);
                 log.warn("disconnected id : {}", userId);
