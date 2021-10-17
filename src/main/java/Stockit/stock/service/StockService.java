@@ -1,14 +1,14 @@
-package Stockit.order.service;
+package Stockit.stock.service;
 
-import Stockit.order.domain.Stock;
-import Stockit.order.repository.StockRepository;
 import Stockit.order.vo.StockUpdateVO;
+import Stockit.stock.domain.Stock;
+import Stockit.stock.dto.StockDto;
+import Stockit.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,8 +30,8 @@ public class StockService {
     }
 
     // 주식 하나 찾기
-    public Optional<Stock> findStock(long stockCode) {
-        return stockRepository.findById(stockCode);
+    public StockDto findStock(long stockCode) {
+        return new StockDto(stockRepository.findById(stockCode).get());
     }
 
     // 주식 가격 업데이트

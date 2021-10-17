@@ -1,19 +1,16 @@
-package Stockit.order.controller;
+package Stockit.stock.controller;
 
-import Stockit.order.domain.Stock;
-import Stockit.order.dto.StockDto;
-import Stockit.order.service.StockService;
 import Stockit.order.vo.StockUpdateVO;
-import Stockit.order.vo.StockVO;
 import Stockit.response.BasicResponse;
 import Stockit.response.SuccessResponse;
+import Stockit.stock.domain.Stock;
+import Stockit.stock.dto.StockDto;
+import Stockit.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -28,9 +25,9 @@ public class StockController {
     public ResponseEntity<BasicResponse> create(@RequestBody StockDto form) {
         Stock stock = new Stock(form);
         Long stockCode = stockService.createNewStock(stock);
-        final StockVO stockVO = new StockVO(stockCode, stock.getStockName(), stock.getPrice(), stock.getDescription(), stock.getCategory(), true);
+        final StockDto stockDto = stockService.findStock(stockCode);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "주식회사 생성", stockVO));
+                new SuccessResponse<>(HttpStatus.OK.value(), "주식회사 생성", stockDto));
     }
 
     //모든 주식 조회
@@ -43,9 +40,9 @@ public class StockController {
     //주식 하나 조회
     @GetMapping(value = "/info/{stockCode}")
     public ResponseEntity<BasicResponse> getStockInfo(@PathVariable Long stockCode) {
-        final Optional<Stock> stock = stockService.findStock(stockCode);
+        final StockDto stock = stockService.findStock(stockCode);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "주식 하나 조회", stock.orElseThrow(IllegalArgumentException::new)));
+                new SuccessResponse<>(HttpStatus.OK.value(), "주식 하나 조회", stock));
     }
     
     //주식 가격/상태 업데이트

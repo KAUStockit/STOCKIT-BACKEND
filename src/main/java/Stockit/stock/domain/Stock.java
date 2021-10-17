@@ -1,6 +1,6 @@
-package Stockit.order.domain;
+package Stockit.stock.domain;
 
-import Stockit.order.dto.StockDto;
+import Stockit.stock.dto.StockDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

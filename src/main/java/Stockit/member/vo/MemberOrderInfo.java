@@ -1,7 +1,7 @@
 package Stockit.member.vo;
 
 import Stockit.order.domain.Order;
-import Stockit.order.domain.Stock;
+import Stockit.stock.domain.Stock;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

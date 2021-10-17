@@ -1,7 +1,7 @@
 package Stockit.order.repository;
 
 import Stockit.order.domain.Order;
-import Stockit.order.domain.Stock;
+import Stockit.stock.domain.Stock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
