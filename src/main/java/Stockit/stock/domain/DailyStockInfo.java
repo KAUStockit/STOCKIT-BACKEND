@@ -2,7 +2,6 @@ package Stockit.stock.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -18,10 +17,8 @@ public class DailyStockInfo {
     @JoinColumn(name = "stock_code")
     public Stock stock;
 
-    @Column(unique = true)
     private String stockName;
 
-    @Setter
     private int price;
 
 
