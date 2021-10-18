@@ -3,9 +3,6 @@ package Stockit.order.repository;
 import Stockit.order.domain.Order;
 import Stockit.stock.domain.Stock;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,15 +17,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Optional<Order> findById(long orderIdx);
 
-    @Modifying
-    @Query(value = "UPDATE orders o SET o.completed_count = o.completed_count + :orderCount WHERE o.order_id = :orderId", nativeQuery = true)
-    void updateCompletedOrderCount(@Param("orderId") long orderId, @Param("orderCount") int orderCount);
+//    @Modifying
+//    @Query(value = "UPDATE orders o SET o.completed_count = o.completed_count + :orderCount WHERE o.order_id = :orderId", nativeQuery = true)
+//    void updateCompletedOrderCount(@Param("orderId") long orderId, @Param("orderCount") int orderCount);
 
-    @Modifying
-    @Query(value = "UPDATE orders o SET o.status = :orderStatus WHERE o.order_id = :orderId", nativeQuery = true)
-    void updateOrderStatus(@Param("orderId") long orderId, @Param("orderStatus") String orderStatus);
+//    @Modifying
+//    @Query(value = "UPDATE orders o SET o.status = :orderStatus WHERE o.order_id = :orderId", nativeQuery = true)
+//    void updateOrderStatus(@Param("orderId") long orderId, @Param("orderStatus") String orderStatus);
 
-    @Modifying
-    @Query(value = "UPDATE orders o SET o.completed_price = :completedPrice WHERE o.order_id = :orderId", nativeQuery = true)
-    void updateCompletedPrice(@Param("orderId") long orderId, @Param("completedPrice") double completedPrice);
+//    @Modifying
+//    @Query(value = "UPDATE orders o SET o.completed_price = :completedPrice WHERE o.order_id = :orderId", nativeQuery = true)
+//    void updateCompletedPrice(@Param("orderId") long orderId, @Param("completedPrice") double completedPrice);
 }

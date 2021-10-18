@@ -34,7 +34,7 @@ public class MemberService {
         validateDuplicateMember(member);//중복 회원 검증
         final Member savedMember = memberRepository.save(member);
         savedMember.createAccount(new Account());
-        return savedMember.getIdx();
+        return savedMember.getId();
     }
 
     //중복 회원 검증

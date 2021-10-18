@@ -58,8 +58,7 @@ public class StockService {
     @Transactional
     public void updateStock(StockUpdateVO stockUpdateVO, Long stockCode) {
         Stock stock = stockRepository.getOne(stockCode);
-        stock.setPrice(stockUpdateVO.getPrice());
-        stock.setActive(stockUpdateVO.isActive());
+        stock.updateStock(stockUpdateVO.getPrice(), stockUpdateVO.isActive());
         stockRepository.save(stock);
     }
 }

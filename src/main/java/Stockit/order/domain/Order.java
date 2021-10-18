@@ -57,4 +57,11 @@ public class Order {
         return new Order(member, stock, orderDto);
     }
 
+    public void updateOrder(int tradeCount, int orderPrice) {
+        double beforeTotalPrice = this.completedPrice * this.completedCount;
+        this.completedCount += tradeCount; //체결 수량 업데이트
+        this.completedPrice = (beforeTotalPrice + tradeCount * orderPrice) / this.completedCount;//체결 평균 가격 업데이트
+        if (this.completedCount == this.stockOrderCount) this.status = OrderStatus.ACCEPTED.name();
+    }
+
 }

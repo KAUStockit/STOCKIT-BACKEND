@@ -23,13 +23,13 @@ public class UserInfo {
     private final String token;
 
     public UserInfo(Member member, String token) {
-        this(member.getIdx(), member.getName(), member.getNickname(), member.getEmail(),
+        this(member.getId(), member.getName(), member.getNickname(), member.getEmail(),
                 member.getAccount().getBalance(), member.getAccount().getBeforeBalance(), member.getCreatedTime().truncatedTo(ChronoUnit.MILLIS),
                 member.getAccount().getEarningRate(), member.getRole(), token);
     }
 
     public UserInfo(Member member) {
-        this(member.getIdx(), member.getName(), member.getNickname(), member.getEmail(),
+        this(member.getId(), member.getName(), member.getNickname(), member.getEmail(),
                 member.getAccount().getBalance(), member.getAccount().getBeforeBalance(), member.getCreatedTime(),
                 member.getAccount().getEarningRate(), member.getRole(), "");
     }

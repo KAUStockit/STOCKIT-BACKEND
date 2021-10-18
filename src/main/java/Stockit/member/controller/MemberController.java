@@ -52,7 +52,7 @@ public class MemberController {
             throw new IllegalStateException("멤버를 생성하지 못했습니다.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "회원가입 성공", member.getIdx()));
+                new SuccessResponse<>(HttpStatus.OK.value(), "회원가입 성공", member.getId()));
     }
 
     //닉네임 중복 검사

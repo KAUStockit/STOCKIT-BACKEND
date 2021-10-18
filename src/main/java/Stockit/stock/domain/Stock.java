@@ -3,7 +3,6 @@ package Stockit.stock.domain;
 import Stockit.stock.dto.StockDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -22,10 +21,8 @@ public class Stock {
     @Column(unique = true)
     private String stockName;
 
-    @Setter
     private int price;
 
-    @Setter
     private boolean isActive; //거래 or 거래중지
 
     private String description; //주식 설명
@@ -43,7 +40,13 @@ public class Stock {
         this.category = category;
         this.isActive = true;
     }
+
     public Stock(StockDto stockDto) {
         this(stockDto.getStockName(), stockDto.getPrice(), stockDto.getDescription(), stockDto.getCategory());
+    }
+
+    public void updateStock(int price, boolean isActive) {
+        this.price = price;
+        this.isActive = isActive;
     }
 }

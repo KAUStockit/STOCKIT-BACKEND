@@ -25,4 +25,13 @@ public class AccountStock {
 
     private int amount;
 
+    public void updateAmount(int updateAmount) {
+        this.amount += updateAmount;
+    }
+
+    public AccountStock(Account account, Stock stock, int amount) {
+        this.account = account;
+        this.stock = stock;
+        this.amount = amount;
+    }
 }

@@ -27,7 +27,7 @@ public class Account {
     //이전 주의 최종 balance
     private Integer beforeBalance = INITIAL_BALANCE;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<AccountStock> accountStocks = new ArrayList<>();
 
     public void updateBalance(int money) {
