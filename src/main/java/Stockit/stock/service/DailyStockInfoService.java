@@ -1,6 +1,6 @@
 package Stockit.stock.service;
 
-import Stockit.stock.domain.DailyStockInfo;
+import Stockit.stock.domain.DailyStock;
 import Stockit.stock.domain.Stock;
 import Stockit.stock.repository.DailyStockInfoRepository;
 import Stockit.stock.repository.StockRepository;
@@ -20,11 +20,11 @@ public class DailyStockInfoService {
     private final StockRepository stockRepository;
 
     @Scheduled(cron = "0 0 18 * * ?")
-    public void pushDailyStockInfo() {
+    public void pushDailyStockList() {
         final List<Stock> stockList = stockRepository.findAll();
         for (Stock stock: stockList) {
-            final DailyStockInfo dailyStockInfo = new DailyStockInfo(stock);
-            repository.save(dailyStockInfo);
+            final DailyStock dailyStock = new DailyStock(stock);
+            repository.save(dailyStock);
         }
     }
 }

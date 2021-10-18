@@ -1,7 +1,7 @@
 package Stockit.order.domain;
 
 import Stockit.member.domain.Member;
-import Stockit.order.dto.OrderDto;
+import Stockit.order.dto.OrderRequest;
 import Stockit.stock.domain.Stock;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,7 +42,7 @@ public class Order {
     private Stock stock;
 
     ///////////////////////////////////////
-    public Order(Member member, Stock stock, OrderDto orderDto) {
+    public Order(Member member, Stock stock, OrderRequest orderDto) {
         this.member = member;
         this.stock = stock;
         this.stockOrderPrice = orderDto.getStockOrderPrice();
@@ -53,7 +53,7 @@ public class Order {
         this.type = orderDto.getOrderType();
     }
     //////////////////////////////////////
-    public static Order createOrder(Member member, Stock stock, OrderDto orderDto) {
+    public static Order createOrder(Member member, Stock stock, OrderRequest orderDto) {
         return new Order(member, stock, orderDto);
     }
 
@@ -62,6 +62,10 @@ public class Order {
         this.completedCount += tradeCount; //체결 수량 업데이트
         this.completedPrice = (beforeTotalPrice + tradeCount * orderPrice) / this.completedCount;//체결 평균 가격 업데이트
         if (this.completedCount == this.stockOrderCount) this.status = OrderStatus.ACCEPTED.name();
+    }
+
+    public void sumSameOrder(int orderCount) {
+        this.stockOrderCount += orderCount;
     }
 
 }

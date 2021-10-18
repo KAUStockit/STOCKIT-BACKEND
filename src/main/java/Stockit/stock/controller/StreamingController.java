@@ -1,6 +1,6 @@
 package Stockit.stock.controller;
 
-import Stockit.stock.dto.DailyStockInfoDto;
+import Stockit.stock.dto.DailyStockInfo;
 import Stockit.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class StreamingController {
     @Scheduled(fixedRate = 1000)
     public void publishStockList() {
         Set<String> deadIds = new HashSet<>();
-        final List<DailyStockInfoDto> allStocksWithPercent = stockService.findAllStocksWithPercent();
+        final List<DailyStockInfo> allStocksWithPercent = stockService.findAllStocksWithPercent();
         CLIENTS.forEach((userId, emitter) -> {
             try {
                 emitter.send(allStocksWithPercent, MediaType.APPLICATION_JSON);

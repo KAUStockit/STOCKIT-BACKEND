@@ -1,15 +1,12 @@
 package Stockit.member.controller;
 
 import Stockit.member.domain.Member;
-import Stockit.member.dto.MemberDto;
+import Stockit.member.dto.*;
 import Stockit.member.service.MemberService;
-import Stockit.member.vo.AuthRequest;
-import Stockit.member.vo.MemberOrderInfo;
-import Stockit.member.vo.RankVO;
-import Stockit.member.vo.UserInfo;
-import Stockit.order.domain.Order;
+import Stockit.order.dto.OrderInfo;
 import Stockit.response.BasicResponse;
 import Stockit.response.SuccessResponse;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.AbstractMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -34,25 +28,19 @@ public class MemberController {
     //모든 멤버 조회
     @GetMapping(value = "/list")
     public ResponseEntity<BasicResponse> list() {
-        List<Member> members = memberService.findAllMembers();
-        final List<UserInfo> userInfoList = members.stream().map(UserInfo::new).collect(Collectors.toList());
+        final List<MemberInfo> members = memberService.findAllMembers();
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "멤버 리스트", userInfoList));
+                new SuccessResponse<>(HttpStatus.OK.value(), "멤버 리스트", members));
     }
 
     //멤버 생성
     @PostMapping(value = "/new")
-    public ResponseEntity<BasicResponse> create(@RequestBody MemberDto form) {
-        Member member;
-        try {
-            form.setPassword(passwordEncoder.encode(form.getPassword()));
-            member = new Member(form);
-            memberService.join(member);
-        } catch (Exception e) {
-            throw new IllegalStateException("멤버를 생성하지 못했습니다.");
-        }
+    public ResponseEntity<BasicResponse> create(@RequestBody MemberJoinRequest form) {
+        form.setPassword(passwordEncoder.encode(form.getPassword()));
+        Member member = new Member(form);
+        final Long memberId = memberService.join(member);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "회원가입 성공", member.getId()));
+                new SuccessResponse<>(HttpStatus.OK.value(), "회원가입 성공", memberId));
     }
 
     //닉네임 중복 검사
@@ -76,7 +64,7 @@ public class MemberController {
     //랭킹 조회
     @GetMapping(value = "/rank")
     public ResponseEntity<BasicResponse> getRankList() {
-        List<RankVO> rankList = memberService.getRankList();
+        List<RankingInfo> rankList = memberService.getRankList();
         return ResponseEntity.status(HttpStatus.OK).body(
                 new SuccessResponse<>(HttpStatus.OK.value(), "랭킹 조회", rankList));
     }
@@ -84,24 +72,27 @@ public class MemberController {
 
     //로그인
     @PostMapping(value = "/login")
-    public ResponseEntity<BasicResponse> login(@RequestBody AuthRequest authRequest) {
-        final UserInfo userInfo = memberService.login(authRequest);
+    public ResponseEntity<BasicResponse> login(@RequestBody LoginRequest loginRequest) {
+        final MemberInfo memberInfo = memberService.login(loginRequest);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "로그인 성공", userInfo));
+                new SuccessResponse<>(HttpStatus.OK.value(), "로그인 성공", memberInfo));
     }
 
     //주문 조회
-    @GetMapping(value = "/{memberIdx}/orders")
-    public ResponseEntity<BasicResponse> getOrders(@PathVariable Long memberIdx) {
-        final List<Order> allOrders = memberService.findAllOrders(memberIdx);
-        final List<MemberOrderInfo> memberOrderInfoList = allOrders.stream().map(MemberOrderInfo::new).collect(Collectors.toList());
-        final AbstractMap<String, Object> memberOrderData = new ConcurrentHashMap<>();
-        final Member member = memberService.findMember(memberIdx).orElseThrow(IllegalArgumentException::new);
-        memberOrderData.put("orders", memberOrderInfoList);
-        memberOrderData.put("member", new UserInfo(member));
-
-
+    @GetMapping(value = "/{memberId}/orders")
+    public ResponseEntity<BasicResponse> getOrders(@PathVariable Long memberId) throws NotFoundException {
+        final MemberInfo memberInfo = memberService.findMember(memberId);
+        final List<OrderInfo> orderInfoList = memberInfo.getOrders();
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "주문 조회", memberOrderData));
+                new SuccessResponse<>(HttpStatus.OK.value(), "주문 조회", orderInfoList));
+    }
+
+    //보유 주식 조회
+    @GetMapping(value = "/{memberId}/stocks")
+    public ResponseEntity<BasicResponse> getMyStocks(@PathVariable Long memberId) throws NotFoundException {
+        final MemberInfo memberInfo = memberService.findMember(memberId);
+        final List<AccountStockInfo> stockInfoList = memberInfo.getStocks();
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new SuccessResponse<>(HttpStatus.OK.value(), "보유 주식 조회", stockInfoList));
     }
 }

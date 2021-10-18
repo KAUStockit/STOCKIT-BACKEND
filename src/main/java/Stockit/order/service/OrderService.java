@@ -7,10 +7,11 @@ import Stockit.member.repository.MemberRepository;
 import Stockit.order.domain.Order;
 import Stockit.order.domain.OrderStatus;
 import Stockit.order.domain.OrderType;
-import Stockit.order.dto.OrderDto;
+import Stockit.order.dto.OrderRequest;
 import Stockit.order.repository.OrderRepository;
 import Stockit.stock.domain.Stock;
 import Stockit.stock.repository.StockRepository;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,26 +31,31 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public Order createOrder(Long memberIdx, Long stockCode, OrderDto orderDto) {
+    public Long createOrder(Long memberIdx, Long stockCode, OrderRequest orderDto) throws NotFoundException {
         Member member = memberRepository.findById(memberIdx).orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
         Stock stock = stockRepository.findById(stockCode).orElseThrow(() -> new IllegalArgumentException("주식 정보가 없습니다."));
 
-        final Optional<Order> existedOrder = member.getOrders().stream().filter(x -> Objects.equals(x.getStock().getId(), stockCode)).findFirst();
-        existedOrder.ifPresent(x -> {
-            if (x.getType().equals(orderDto.getOrderType())) throw new IllegalStateException("이미 반대 종류의 주문이 있습니다. 주문 취소후 다시 시도하세요.");
-        });
+        final Optional<Order> optionalNotAcceptedOrder = member.getOrders().stream().filter(x ->
+                Objects.equals(x.getStock().getId(), stockCode)
+                && x.getStatus().equals(OrderStatus.NOT_ACCEPTED.name())).findFirst();
+
+        if (optionalNotAcceptedOrder.isPresent() &&
+                !optionalNotAcceptedOrder.get().getType().equals(orderDto.getOrderType()))
+            throw new IllegalStateException("이미 반대 종류의 주문이 있습니다. 주문 취소후 다시 시도하세요.");
 
         if (orderDto.getOrderType().equals(OrderType.Buy.name()) && member.getAccount().getBalance() < orderDto.getStockOrderPrice() * orderDto.getStockOrderCount())
             throw new IllegalStateException("계좌 잔액이 부족합니다.");
 
-        return orderRepository.save(Order.createOrder(member, stock, orderDto));
+        final Order savedOrder = orderRepository.save(Order.createOrder(member, stock, orderDto));
+        executeOrder(memberIdx, savedOrder);
+
+        return savedOrder.getId();
     }
 
-    @Transactional
-    public void executeOrder(Order order) {
-        final List<Order> sortedOrderList = this.getSortedOrderList(order);
-        for (Order counterOrder: sortedOrderList) {
-            if (Objects.equals(counterOrder.getMember().getId(), order.getMember().getId())) continue;
+    public void executeOrder(Long memberIdx, Order order) {
+        final List<Order> sortedCounterOrderList = this.getSortedCounterOrderList(order);
+        for (Order counterOrder: sortedCounterOrderList) {
+            if (Objects.equals(counterOrder.getMember().getId(), memberIdx)) continue;
             final boolean isFinished = executeTrade(order, counterOrder);
             if (isFinished) break;
         }
@@ -84,7 +90,7 @@ public class OrderService {
         buyerAccountStock.ifPresentOrElse(x -> x.updateAmount(tradeCount),
                 () -> buyerAccountStockList.add(new AccountStock(buyerAccount, stock, tradeCount)));
         sellerAccountStock.ifPresentOrElse(x -> x.updateAmount(-tradeCount),
-                () -> buyerAccountStockList.add(new AccountStock(buyerAccount, stock, -tradeCount)));;
+                () -> sellerAccountStockList.add(new AccountStock(sellerAccount, stock, -tradeCount)));;
 
         //잔고 업데이트
         buyerAccount.updateBalance(-tradePrice);
@@ -96,11 +102,11 @@ public class OrderService {
         return order.getStatus().equals(OrderStatus.ACCEPTED.name());
     }
 
-    private List<Order> getSortedOrderList(Order order) {
-        Stock stock = order.getStock();
-        String type = order.getType();
-        int price = order.getStockOrderPrice();
-        if (type.equals(OrderType.Buy.name())) return orderRepository.findAllByStockIsAndTypeAndStatusAndStockOrderPriceLessThanEqualOrderByStockOrderPriceAscStockOrderedDate(stock, OrderType.Sell.name(), OrderStatus.NOT_ACCEPTED.name(), price);
-        else return orderRepository.findAllByStockIsAndTypeAndStatusAndStockOrderPriceGreaterThanEqualOrderByStockOrderPriceDescStockOrderedDate(stock, OrderType.Buy.name(), OrderStatus.NOT_ACCEPTED.name(), price);
+    private List<Order> getSortedCounterOrderList(Order order) {
+        final Stock stock = order.getStock();
+        final String type = order.getType();
+        final int stockOrderPrice = order.getStockOrderPrice();
+        if (type.equals(OrderType.Buy.name())) return orderRepository.findAllByStockIsAndTypeAndStatusAndStockOrderPriceLessThanEqualOrderByStockOrderPriceAscStockOrderedDate(stock, OrderType.Sell.name(), OrderStatus.NOT_ACCEPTED.name(), stockOrderPrice);
+        else return orderRepository.findAllByStockIsAndTypeAndStatusAndStockOrderPriceGreaterThanEqualOrderByStockOrderPriceDescStockOrderedDate(stock, OrderType.Buy.name(), OrderStatus.NOT_ACCEPTED.name(), stockOrderPrice);
     }
 }

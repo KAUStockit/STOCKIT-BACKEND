@@ -1,14 +1,16 @@
 package Stockit.member.dto;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
-@Data
-public class MemberDto {
+@Getter
+public class MemberJoinRequest {
 
     private String name;
     private String nickname;
     private String email;
+    @Setter
     private String password;
 }

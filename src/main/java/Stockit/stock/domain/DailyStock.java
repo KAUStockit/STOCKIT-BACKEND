@@ -8,9 +8,9 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class DailyStockInfo {
+public class DailyStock {
     @EmbeddedId
-    private DailyStockInfoId id;
+    private DailyStockId id;
 
     @MapsId("stockCode")
     @ManyToOne
@@ -21,14 +21,13 @@ public class DailyStockInfo {
 
     private int price;
 
-
-    public DailyStockInfo(DailyStockInfoId id, Stock stock, String stockName, int price) {
+    public DailyStock(DailyStockId id, Stock stock, String stockName, int price) {
         this.id = id;
         this.stock = stock;
         this.stockName = stockName;
         this.price = price;
     }
-    public DailyStockInfo(Stock stock) {
-        this(new DailyStockInfoId(stock.getId()), stock, stock.getStockName(), stock.getPrice());
+    public DailyStock(Stock stock) {
+        this(new DailyStockId(stock.getId()), stock, stock.getStockName(), stock.getPrice());
     }
 }

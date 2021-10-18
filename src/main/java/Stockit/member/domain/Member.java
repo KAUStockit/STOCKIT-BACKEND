@@ -1,6 +1,6 @@
 package Stockit.member.domain;
 
-import Stockit.member.dto.MemberDto;
+import Stockit.member.dto.MemberJoinRequest;
 import Stockit.order.domain.Order;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,8 +60,8 @@ public class Member {
         this.password = password;
     }
 
-    public Member(MemberDto memberDto) {
-        this(memberDto.getName(), memberDto.getNickname(), memberDto.getEmail(), memberDto.getPassword());
+    public Member(MemberJoinRequest joinRequest) {
+        this(joinRequest.getName(), joinRequest.getNickname(), joinRequest.getEmail(), joinRequest.getPassword());
     }
 
     public void createAccount(Account account) {

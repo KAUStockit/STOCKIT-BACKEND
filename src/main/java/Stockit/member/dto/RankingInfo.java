@@ -1,4 +1,4 @@
-package Stockit.member.vo;
+package Stockit.member.dto;
 
 import Stockit.member.domain.Member;
 import lombok.Getter;
@@ -6,13 +6,13 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class RankVO {
+public class RankingInfo {
     private final String email;
     private final String nickname;
     private final String name;
     private final Double earningRate;
 
-    public RankVO(Member member) {
+    public RankingInfo(Member member) {
         this.email = member.getEmail();
         this.nickname = member.getNickname();
         this.name = member.getName();

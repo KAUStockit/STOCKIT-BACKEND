@@ -2,12 +2,10 @@ package Stockit.stock.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class DailyStockInfoDto {
+public class DailyStockInfo {
 
     private Long stockCode;
     private String stockName;

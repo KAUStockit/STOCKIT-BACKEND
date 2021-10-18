@@ -1,4 +1,4 @@
-package Stockit.member.vo;
+package Stockit.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthRequest {
+public class LoginRequest {
     String email;
     String password;
 }

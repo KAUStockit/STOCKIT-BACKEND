@@ -1,6 +1,6 @@
 package Stockit.stock.domain;
 
-import Stockit.stock.dto.StockDto;
+import Stockit.stock.dto.StockInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -41,7 +41,7 @@ public class Stock {
         this.isActive = true;
     }
 
-    public Stock(StockDto stockDto) {
+    public Stock(StockInfo stockDto) {
         this(stockDto.getStockName(), stockDto.getPrice(), stockDto.getDescription(), stockDto.getCategory());
     }
 
