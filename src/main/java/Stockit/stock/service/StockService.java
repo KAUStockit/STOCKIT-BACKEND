@@ -27,7 +27,7 @@ public class StockService {
     @Transactional
     public Long createNewStock(Stock stock) {
         stockRepository.save(stock);
-        return stock.getStockCode();
+        return stock.getId();
     }
 
     // 모든 주식 찾기
@@ -43,7 +43,7 @@ public class StockService {
             Stock stock = stockList.get(i);
             int yesterdayPrice = yesterdayStockPriceList.get(i).getPrice();
             double percent = (double)Math.round((double)(stock.getPrice()-yesterdayPrice)/yesterdayPrice * 10000)/100;
-            stockInfoList.add(new DailyStockInfoDto(stock.getStockCode(), stock.getStockName(), stock.getPrice(),
+            stockInfoList.add(new DailyStockInfoDto(stock.getId(), stock.getStockName(), stock.getPrice(),
                     stock.getDescription(), stock.getCategory(), stock.isActive(), percent));
         }
         return stockInfoList;

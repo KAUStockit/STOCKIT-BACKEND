@@ -19,7 +19,7 @@ public class StockDto {
     private boolean isActive;
 
     public StockDto(Stock stock) {
-        this.stockCode = stock.getStockCode();
+        this.stockCode = stock.getId();
         this.stockName = stock.getStockName();
         this.price = stock.getPrice();
         this.description = stock.getDescription();

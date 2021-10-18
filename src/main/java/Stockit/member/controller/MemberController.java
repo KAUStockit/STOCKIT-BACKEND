@@ -74,7 +74,7 @@ public class MemberController {
     }
 
     //랭킹 조회
-    @GetMapping(value = "/rank_list")
+    @GetMapping(value = "/rank")
     public ResponseEntity<BasicResponse> getRankList() {
         List<RankVO> rankList = memberService.getRankList();
         return ResponseEntity.status(HttpStatus.OK).body(

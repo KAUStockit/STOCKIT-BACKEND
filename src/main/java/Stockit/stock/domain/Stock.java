@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Stock {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "stock_code")
-    private Long stockCode;
+    @Column(name = "STOCK_CODE")
+    private Long id;
 
     @Column(unique = true)
     private String stockName;

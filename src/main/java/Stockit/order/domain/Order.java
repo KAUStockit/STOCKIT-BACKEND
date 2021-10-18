@@ -19,8 +19,8 @@ import java.time.LocalDateTime;
 public class Order {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private Long orderIdx;
+    @Column(name = "ORDER_ID")
+    private Long id;
 
     private int stockOrderPrice; //주문 가격
     private int stockOrderCount; //주문 수량
@@ -34,11 +34,11 @@ public class Order {
     private String type; //Buy, Sell
 
     @ManyToOne //N쪽이므로 owner객체, 양방향 N:1
-    @JoinColumn(name = "member_idx")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     @ManyToOne //단방향 N:1
-    @JoinColumn(name = "stock_code")
+    @JoinColumn(name = "STOCK_CODE")
     private Stock stock;
 
     ///////////////////////////////////////

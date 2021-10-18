@@ -16,6 +16,6 @@ public class RankVO {
         this.email = member.getEmail();
         this.nickname = member.getNickname();
         this.name = member.getName();
-        this.earningRate = member.getEarningRate();
+        this.earningRate = member.getAccount().getEarningRate();
     }
 }

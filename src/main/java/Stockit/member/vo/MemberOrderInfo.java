@@ -22,7 +22,7 @@ public class MemberOrderInfo {
     private final Stock stock;
 
     public MemberOrderInfo(Order order) {
-        this(order.getOrderIdx(), order.getStockOrderPrice(), order.getStockOrderCount(), order.getCompletedCount(),
+        this(order.getId(), order.getStockOrderPrice(), order.getStockOrderCount(), order.getCompletedCount(),
         order.getCompletedPrice(), order.getStockOrderedDate(), order.getStatus(), order.getType(), order.getStock());
     }
 }

@@ -30,7 +30,7 @@ public class OrderService {
         Member member = memberRepository.findById(memberIdx).orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
         Stock stock = stockRepository.findById(stockCode).orElseThrow(() -> new IllegalArgumentException("주식 정보가 없습니다."));
 
-        if (orderDto.getOrderType().equals(OrderType.Buy.name()) && member.getBalance() < orderDto.getStockOrderPrice() * orderDto.getStockOrderCount())
+        if (orderDto.getOrderType().equals(OrderType.Buy.name()) && member.getAccount().getBalance() < orderDto.getStockOrderPrice() * orderDto.getStockOrderCount())
             throw new IllegalStateException("계좌 잔액이 부족합니다.");
 
         return orderRepository.save(Order.createOrder(member, stock, orderDto));
@@ -53,7 +53,8 @@ public class OrderService {
         }
     }
 
-    private boolean executeTrade(Order order, Order counterOrder) {
+    @Transactional
+    public boolean executeTrade(Order order, Order counterOrder) {
         int restCounterOrderCount = counterOrder.getStockOrderCount() - counterOrder.getCompletedCount();
         final boolean isOrderBiggerThanEqualRestCounterOrder = order.getStockOrderCount() >= restCounterOrderCount;
         Order bigOrder = isOrderBiggerThanEqualRestCounterOrder ? order : counterOrder;
@@ -61,28 +62,28 @@ public class OrderService {
         int tradeCount = isOrderBiggerThanEqualRestCounterOrder ?restCounterOrderCount : order.getStockOrderCount();
 
         //체결 수량 반영
-        orderRepository.updateCompletedOrderCount(counterOrder.getOrderIdx(), tradeCount);
-        orderRepository.updateCompletedOrderCount(order.getOrderIdx(), tradeCount);
+        orderRepository.updateCompletedOrderCount(counterOrder.getId(), tradeCount);
+        orderRepository.updateCompletedOrderCount(order.getId(), tradeCount);
 
         //체결 평균 가격 업데이트
-        orderRepository.updateCompletedPrice(order.getOrderIdx(), order.getStockOrderPrice());
+        orderRepository.updateCompletedPrice(order.getId(), order.getStockOrderPrice());
         double thisTradeTotalPrice = tradeCount * order.getStockOrderPrice();
         double counterOrderCompletedPriceSum = counterOrder.getCompletedPrice() * counterOrder.getCompletedCount();
         double counterOrderNewCompletedPrice = (counterOrderCompletedPriceSum + thisTradeTotalPrice) / (counterOrder.getCompletedCount() + tradeCount);
-        orderRepository.updateCompletedPrice(counterOrder.getOrderIdx(), counterOrderNewCompletedPrice);
+        orderRepository.updateCompletedPrice(counterOrder.getId(), counterOrderNewCompletedPrice);
 
         //잔고 업데이트
         int price = order.getStockOrderPrice() * order.getStockOrderCount();
         if (order.getType().equals(OrderType.Sell.name())) price = price * -1;
-        memberRepository.updateBalance(order.getMember().getIdx(), -price);
-        memberRepository.updateBalance(counterOrder.getMember().getIdx(), price);
+        order.getMember().getAccount().updateBalance(-price);
+        counterOrder.getMember().getAccount().updateBalance(price);
 
         //전체 체결/미체결 반영
-        orderRepository.updateOrderStatus(smallOrder.getOrderIdx(), OrderStatus.ACCEPTED.name());
-        if (bigOrder.getStockOrderCount() == bigOrder.getCompletedCount() + tradeCount) orderRepository.updateOrderStatus(bigOrder.getOrderIdx(), OrderStatus.ACCEPTED.name());
+        orderRepository.updateOrderStatus(smallOrder.getId(), OrderStatus.ACCEPTED.name());
+        if (bigOrder.getStockOrderCount() == bigOrder.getCompletedCount() + tradeCount) orderRepository.updateOrderStatus(bigOrder.getId(), OrderStatus.ACCEPTED.name());
 
         //주식 가격 업데이트
-        order.getStock().setPrice(Math.abs(price));
+        order.getStock().setPrice(order.getStockOrderPrice());
 
         return isOrderBiggerThanEqualRestCounterOrder;
     }

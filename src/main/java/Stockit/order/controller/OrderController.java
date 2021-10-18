@@ -27,6 +27,6 @@ public class OrderController {
         orderService.executeOrder(order);
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "주문 생성", order.getOrderIdx()));
+                new SuccessResponse<>(HttpStatus.OK.value(), "주문 생성", order.getId()));
     }
 }

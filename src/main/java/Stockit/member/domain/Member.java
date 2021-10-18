@@ -22,7 +22,7 @@ import java.util.List;
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_idx")
+    @Column(name = "MEMBER_ID")
     private Long idx;
 
     private String name;
@@ -35,26 +35,21 @@ public class Member {
 
     private String password;
 
-    private int balance;
-
-    //이전 주의 최종 balance
-    private int beforeBalance;
-
     @CreatedDate
     private LocalDateTime createdTime;
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
-    private Double earningRate;
-
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
     @OneToMany(mappedBy = "member")
-    private List<Order> orders = new ArrayList<>();
-    
-    private final int INITIAL_BALANCE = 1000000; // 첫 회원 잔고
+    private final List<Order> orders = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ACCOUNT_ID")
+    private Account account;
 
     ////////////////////////////////////////////////////////////////////////////
 
@@ -63,14 +58,13 @@ public class Member {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
-
-        this.role = Role.USER; // 기본은 유저
-        this.beforeBalance = INITIAL_BALANCE;
-        this.balance = INITIAL_BALANCE;
-        this.earningRate = 0d;
     }
 
     public Member(MemberDto memberDto) {
         this(memberDto.getName(), memberDto.getNickname(), memberDto.getEmail(), memberDto.getPassword());
+    }
+
+    public void createAccount(Account account) {
+        this.account = account;
     }
 }

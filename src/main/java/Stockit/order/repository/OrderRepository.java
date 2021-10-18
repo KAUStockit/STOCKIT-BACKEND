@@ -17,17 +17,18 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByStockIsAndTypeAndStatusAndStockOrderPriceLessThanEqualOrderByStockOrderPriceAscStockOrderedDate(Stock stock, String type, String status, int stockOrderPrice);
     // 판매시 구매 후보 리스트
     List<Order> findAllByStockIsAndTypeAndStatusAndStockOrderPriceGreaterThanEqualOrderByStockOrderPriceDescStockOrderedDate(Stock stock, String type, String status, int stockOrderPrice);
-    Optional<Order> findByOrderIdx(long orderIdx);
+
+    Optional<Order> findById(long orderIdx);
 
     @Modifying
-    @Query(value = "UPDATE orders o SET o.completed_count = o.completed_count + :orderCount WHERE o.order_idx = :orderIdx", nativeQuery = true)
-    void updateCompletedOrderCount(@Param("orderIdx") long orderIdx, @Param("orderCount") int orderCount);
+    @Query(value = "UPDATE orders o SET o.completed_count = o.completed_count + :orderCount WHERE o.order_id = :orderId", nativeQuery = true)
+    void updateCompletedOrderCount(@Param("orderId") long orderId, @Param("orderCount") int orderCount);
 
     @Modifying
-    @Query(value = "UPDATE orders o SET o.status = :orderStatus WHERE o.order_idx = :orderIdx", nativeQuery = true)
-    void updateOrderStatus(@Param("orderIdx") long orderIdx, @Param("orderStatus") String orderStatus);
+    @Query(value = "UPDATE orders o SET o.status = :orderStatus WHERE o.order_id = :orderId", nativeQuery = true)
+    void updateOrderStatus(@Param("orderId") long orderId, @Param("orderStatus") String orderStatus);
 
     @Modifying
-    @Query(value = "UPDATE orders o SET o.completed_price = :completedPrice WHERE o.order_idx = :orderIdx", nativeQuery = true)
-    void updateCompletedPrice(@Param("orderIdx") long orderIdx, @Param("completedPrice") double completedPrice);
+    @Query(value = "UPDATE orders o SET o.completed_price = :completedPrice WHERE o.order_id = :orderId", nativeQuery = true)
+    void updateCompletedPrice(@Param("orderId") long orderId, @Param("completedPrice") double completedPrice);
 }

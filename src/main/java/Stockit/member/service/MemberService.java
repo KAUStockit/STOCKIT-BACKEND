@@ -1,6 +1,7 @@
 package Stockit.member.service;
 
 import Stockit.jwt.JwtUtil;
+import Stockit.member.domain.Account;
 import Stockit.member.domain.Member;
 import Stockit.member.repository.MemberRepository;
 import Stockit.member.vo.AuthRequest;
@@ -31,8 +32,9 @@ public class MemberService {
     @Transactional //수정 가능
     public Long join(Member member) {
         validateDuplicateMember(member);//중복 회원 검증
-        memberRepository.save(member);
-        return member.getIdx();
+        final Member savedMember = memberRepository.save(member);
+        savedMember.createAccount(new Account());
+        return savedMember.getIdx();
     }
 
     //중복 회원 검증
@@ -55,7 +57,7 @@ public class MemberService {
 
     //랭킹 조회
     public List<RankVO> getRankList() {
-        List<Member> members = memberRepository.findAll(Sort.by(Sort.Direction.DESC, "earningRate"));
+        List<Member> members = memberRepository.findAllByRank();
         List<RankVO> ranking = new ArrayList<>();
         for (Member member : members) {
             ranking.add(new RankVO(member));

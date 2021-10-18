@@ -14,7 +14,7 @@ public class DailyStockInfo {
 
     @MapsId("stockCode")
     @ManyToOne
-    @JoinColumn(name = "stock_code")
+    @JoinColumn(name = "STOCK_CODE")
     public Stock stock;
 
     private String stockName;
@@ -29,6 +29,6 @@ public class DailyStockInfo {
         this.price = price;
     }
     public DailyStockInfo(Stock stock) {
-        this(new DailyStockInfoId(stock.getStockCode()), stock, stock.getStockName(), stock.getPrice());
+        this(new DailyStockInfoId(stock.getId()), stock, stock.getStockName(), stock.getPrice());
     }
 }
