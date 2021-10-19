@@ -5,7 +5,7 @@ import Stockit.stock.domain.Stock;
 import Stockit.stock.dto.DailyStockInfo;
 import Stockit.stock.dto.StockInfo;
 import Stockit.stock.dto.StockUpdateRequest;
-import Stockit.stock.repository.DailyStockInfoRepository;
+import Stockit.stock.repository.DailyStockRepository;
 import Stockit.stock.repository.StockRepository;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class StockService {
 
     private final StockRepository stockRepository;
-    private final DailyStockInfoRepository dailyStockInfoRepository;
+    private final DailyStockRepository dailyStockRepository;
 
     // 주식 종목 생성
     @Transactional
@@ -40,7 +40,7 @@ public class StockService {
 
     public List<DailyStockInfo> findAllStocksWithPercent() {
         List<Stock> stockList = stockRepository.findAll();
-        final List<DailyStock> yesterdayStockPriceList = dailyStockInfoRepository.findAllByIdDateOrderByIdStockCode(LocalDate.now().minusDays(1));
+        final List<DailyStock> yesterdayStockPriceList = dailyStockRepository.findAllByIdDateOrderByIdStockCode(LocalDate.now().minusDays(1));
         List<DailyStockInfo> stockInfoList = new ArrayList<>();
         for (int i=0; i<stockList.size(); i++) {
             Stock stock = stockList.get(i);

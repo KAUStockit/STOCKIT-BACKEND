@@ -5,6 +5,7 @@ import Stockit.member.domain.Account;
 import Stockit.member.domain.Member;
 import Stockit.member.dto.LoginRequest;
 import Stockit.member.dto.MemberInfo;
+import Stockit.member.dto.MemberJoinRequest;
 import Stockit.member.dto.RankingInfo;
 import Stockit.member.repository.MemberRepository;
 import Stockit.order.dto.OrderInfo;
@@ -32,7 +33,8 @@ public class MemberService {
     private final static long LOGIN_RETENTION_MINUTES = 30;
 
     @Transactional //수정 가능
-    public Long join(Member member) {
+    public Long join(MemberJoinRequest form) {
+        Member member = new Member(form);
         validateDuplicateMember(member);//중복 회원 검증
         final Member savedMember = memberRepository.save(member);
         savedMember.createAccount(new Account());

@@ -2,12 +2,14 @@ package Stockit.stock.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class DailyStock {
     @EmbeddedId
     private DailyStockId id;

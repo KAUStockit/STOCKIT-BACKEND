@@ -1,16 +1,12 @@
 package Stockit.member.controller;
 
-import Stockit.member.domain.Member;
 import Stockit.member.dto.*;
 import Stockit.member.service.MemberService;
 import Stockit.order.dto.OrderInfo;
-import Stockit.response.BasicResponse;
-import Stockit.response.SuccessResponse;
+import Stockit.response.ApiResponse;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,73 +22,58 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
 
     //모든 멤버 조회
-    @GetMapping(value = "/list")
-    public ResponseEntity<BasicResponse> list() {
-        final List<MemberInfo> members = memberService.findAllMembers();
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "멤버 리스트", members));
+    @GetMapping
+    public ApiResponse<List<MemberInfo>> list() {
+        return ApiResponse.ok(memberService.findAllMembers());
     }
 
     //멤버 생성
-    @PostMapping(value = "/new")
-    public ResponseEntity<BasicResponse> create(@RequestBody MemberJoinRequest form) {
-        form.setPassword(passwordEncoder.encode(form.getPassword()));
-        Member member = new Member(form);
-        final Long memberId = memberService.join(member);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "회원가입 성공", memberId));
+    @PostMapping
+    public ApiResponse<Long> create(@RequestBody MemberJoinRequest form) {
+        form.encodePassword(passwordEncoder.encode(form.getPassword()));
+        return ApiResponse.ok(memberService.join(form));
     }
 
     //닉네임 중복 검사
-    @GetMapping(value = "/login/validate/nickname")
-    public ResponseEntity<BasicResponse> checkDuplicatedNickname(@RequestParam String nickname) {
+    @GetMapping(value = "/login/valid-nickname")
+    public ApiResponse<String> checkDuplicatedNickname(@RequestParam String nickname) {
         boolean duplicated = memberService.findDuplicatedNickname(nickname);
         if (duplicated) throw new IllegalArgumentException("닉네임 중복");
-        else return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "닉네임 중복검사 통과", nickname));
+        return ApiResponse.ok(nickname);
     }
 
     //이메일 중복 검사
-    @GetMapping(value = "/login/validate/email")
-    public ResponseEntity<BasicResponse> checkDuplicatedEmail(@RequestParam String email) {
+    @GetMapping(value = "/login/valid-email")
+    public ApiResponse<String> checkDuplicatedEmail(@RequestParam String email) {
         boolean duplicated = memberService.findDuplicatedEmail(email);
         if (duplicated) throw new IllegalArgumentException("이메일 중복");
-        else return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "이메일 중복검사 통과", email));
+        return ApiResponse.ok(email);
     }
 
     //랭킹 조회
     @GetMapping(value = "/rank")
-    public ResponseEntity<BasicResponse> getRankList() {
-        List<RankingInfo> rankList = memberService.getRankList();
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "랭킹 조회", rankList));
+    public ApiResponse<List<RankingInfo>> getRankList() {
+        return ApiResponse.ok(memberService.getRankList());
     }
 
 
     //로그인
     @PostMapping(value = "/login")
-    public ResponseEntity<BasicResponse> login(@RequestBody LoginRequest loginRequest) {
-        final MemberInfo memberInfo = memberService.login(loginRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "로그인 성공", memberInfo));
+    public ApiResponse<MemberInfo> login(@RequestBody LoginRequest loginRequest) {
+        return ApiResponse.ok(memberService.login(loginRequest));
     }
 
     //주문 조회
     @GetMapping(value = "/{memberId}/orders")
-    public ResponseEntity<BasicResponse> getOrders(@PathVariable Long memberId) throws NotFoundException {
+    public ApiResponse<List<OrderInfo>> getOrders(@PathVariable Long memberId) throws NotFoundException {
         final MemberInfo memberInfo = memberService.findMember(memberId);
-        final List<OrderInfo> orderInfoList = memberInfo.getOrders();
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "주문 조회", orderInfoList));
+        return ApiResponse.ok(memberInfo.getOrders());
     }
 
     //보유 주식 조회
     @GetMapping(value = "/{memberId}/stocks")
-    public ResponseEntity<BasicResponse> getMyStocks(@PathVariable Long memberId) throws NotFoundException {
+    public ApiResponse<List<AccountStockInfo>> getMyStocks(@PathVariable Long memberId) throws NotFoundException {
         final MemberInfo memberInfo = memberService.findMember(memberId);
-        final List<AccountStockInfo> stockInfoList = memberInfo.getStocks();
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new SuccessResponse<>(HttpStatus.OK.value(), "보유 주식 조회", stockInfoList));
+        return ApiResponse.ok(memberInfo.getStocks());
     }
 }

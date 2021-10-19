@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface DailyStockInfoRepository extends JpaRepository<DailyStock, DailyStockId> {
+public interface DailyStockRepository extends JpaRepository<DailyStock, DailyStockId> {
 
     List<DailyStock> findAllByIdDateOrderByIdStockCode(LocalDate id_date);
 }
