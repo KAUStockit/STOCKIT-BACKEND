@@ -70,4 +70,12 @@ public class StockService {
         stock.updateStock(stockUpdateRequest.getPrice(), stockUpdateRequest.isActive());
         stockRepository.save(stock);
     }
+
+    public List<StockInfo> findStockList(List<Long> stockCodeList) {
+        List<StockInfo> stockInfoList = new ArrayList<>();
+        for (Long stockCode: stockCodeList) {
+            stockInfoList.add(new StockInfo(stockRepository.getOne(stockCode)));
+        }
+        return stockInfoList;
+    }
 }

@@ -4,13 +4,17 @@ import Stockit.member.dto.*;
 import Stockit.member.service.MemberService;
 import Stockit.order.dto.OrderInfo;
 import Stockit.response.ApiResponse;
+import Stockit.stock.dto.StockInfo;
+import Stockit.stock.service.StockService;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -20,6 +24,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
+    private final StockService stockService;
 
     //모든 멤버 조회
     @GetMapping
@@ -72,8 +77,12 @@ public class MemberController {
 
     //보유 주식 조회
     @GetMapping(value = "/{memberId}/stocks")
-    public ApiResponse<List<AccountStockInfo>> getMyStocks(@PathVariable Long memberId) throws NotFoundException {
+    public ApiResponse<Pair<List<AccountStockInfo>, List<StockInfo>>> getMyStocks(@PathVariable Long memberId) throws NotFoundException {
         final MemberInfo memberInfo = memberService.findMember(memberId);
-        return ApiResponse.ok(memberInfo.getStocks());
+        final List<Long> stockCodeList =
+                memberInfo.getStocks().stream().map(AccountStockInfo::getStockCode).collect(Collectors.toList());
+        final List<StockInfo> stockInfoList = stockService.findStockList(stockCodeList);
+        Pair<List<AccountStockInfo>, List<StockInfo>> myStockInfoList = Pair.of(memberInfo.getStocks(), stockInfoList);
+        return ApiResponse.ok(myStockInfoList);
     }
 }
