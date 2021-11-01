@@ -27,8 +27,9 @@ public class StockController {
 
     //모든 주식 조회
     @GetMapping
-    public ApiResponse<List<StockInfo>> stockList() {
-        return ApiResponse.ok(stockService.findAllStocks());
+    public ApiResponse<List<StockInfo>> stockList(@RequestParam Integer price) {
+        if (price != null) return ApiResponse.ok(stockService.findAllStocksUnderPrice(price));
+        else return ApiResponse.ok(stockService.findAllStocks());
     }
 
     //주식 하나 조회
