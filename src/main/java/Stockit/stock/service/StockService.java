@@ -38,6 +38,12 @@ public class StockService {
         return stockRepository.findAll().stream().map(StockInfo::new).collect(Collectors.toList());
     }
 
+    // price원 이하 모든 주식 찾기
+    public List<StockInfo> findAllStocksUnderPrice(int price) {
+        return stockRepository.findAllByPriceLessThanEqualOrderById(price)
+                .stream().map(StockInfo::new).collect(Collectors.toList());
+    }
+
     public List<DailyStockInfo> findAllStocksWithPercent() {
         List<Stock> stockList = stockRepository.findAll();
         final List<DailyStock> yesterdayStockPriceList = dailyStockRepository.findAllByIdDateOrderByIdStockCode(LocalDate.now().minusDays(1));
