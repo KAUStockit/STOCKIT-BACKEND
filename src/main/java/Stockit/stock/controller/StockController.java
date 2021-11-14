@@ -26,9 +26,17 @@ public class StockController {
     }
 
     //모든 주식 조회
+    /*
+    * type
+    * 0: 일반조회
+    * 1: 인기순
+    * 2: 시총순
+     */
     @GetMapping
-    public ApiResponse<List<StockInfo>> stockList(@RequestParam(defaultValue = "-1") Integer price) {
+    public ApiResponse<List<StockInfo>> stockList(@RequestParam(defaultValue = "-1") Integer price, @RequestParam(defaultValue = "0") Integer type) {
         if (price != -1) return ApiResponse.ok(stockService.findAllStocksUnderPrice(price));
+        else if (type == 1) return ApiResponse.ok(stockService.findAllStocksOrderByTotalOrder());
+        else if (type == 2) return ApiResponse.ok(stockService.findAllStocksOrderByPrice());
         else return ApiResponse.ok(stockService.findAllStocks());
     }
 

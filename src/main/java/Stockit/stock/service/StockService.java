@@ -44,6 +44,16 @@ public class StockService {
                 .stream().map(StockInfo::new).collect(Collectors.toList());
     }
 
+    public List<StockInfo> findAllStocksOrderByTotalOrder() {
+        return stockRepository.findAllStocksOrderByTotalOrder()
+                .stream().map(StockInfo::new).collect(Collectors.toList());
+    }
+
+    public List<StockInfo> findAllStocksOrderByPrice() {
+        return stockRepository.findAllByOrderByPriceDesc()
+                .stream().map(StockInfo::new).collect(Collectors.toList());
+    }
+
     public List<DailyStockInfo> findAllStocksWithPercent() {
         List<Stock> stockList = stockRepository.findAll();
         final List<DailyStock> yesterdayStockPriceList = dailyStockRepository.findAllByIdDateOrderByIdStockCode(LocalDate.now().minusDays(1));
