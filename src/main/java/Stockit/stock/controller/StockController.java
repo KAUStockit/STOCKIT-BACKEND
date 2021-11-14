@@ -31,12 +31,14 @@ public class StockController {
     * 0: 일반조회
     * 1: 인기순
     * 2: 시총순
+    * 3: 수익률순(전날 대비)
      */
     @GetMapping
     public ApiResponse<List<StockInfo>> stockList(@RequestParam(defaultValue = "-1") Integer price, @RequestParam(defaultValue = "0") Integer type) {
         if (price != -1) return ApiResponse.ok(stockService.findAllStocksUnderPrice(price));
         else if (type == 1) return ApiResponse.ok(stockService.findAllStocksOrderByTotalOrder());
         else if (type == 2) return ApiResponse.ok(stockService.findAllStocksOrderByPrice());
+        else if (type == 3) return ApiResponse.ok(stockService.findAllStocksOrderByVariation());
         else return ApiResponse.ok(stockService.findAllStocks());
     }
 

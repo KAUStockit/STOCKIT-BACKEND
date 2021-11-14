@@ -12,8 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,6 +54,15 @@ public class StockService {
 
     public List<StockInfo> findAllStocksOrderByPrice() {
         return stockRepository.findAllByOrderByPriceDesc()
+                .stream().map(StockInfo::new).collect(Collectors.toList());
+    }
+
+    public List<StockInfo> findAllStocksOrderByVariation() {
+        Calendar cal = Calendar.getInstance();
+        String format = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        cal.add(cal.DATE, -1); //날짜를 하루 뺀다.
+        return stockRepository.findAllStocksOrderByVariation(cal.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
                 .stream().map(StockInfo::new).collect(Collectors.toList());
     }
 
