@@ -1,4 +1,4 @@
-package Stockit.interfaces.member;
+package Stockit.interfaces.member.dto;
 
 import Stockit.domain.member.AccountStock;
 import lombok.Getter;

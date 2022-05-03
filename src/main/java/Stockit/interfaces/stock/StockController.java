@@ -2,6 +2,8 @@ package Stockit.interfaces.stock;
 
 import Stockit.common.response.ApiResponse;
 import Stockit.domain.stock.StockService;
+import Stockit.interfaces.stock.dto.StockInfo;
+import Stockit.interfaces.stock.dto.StockUpdateRequest;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

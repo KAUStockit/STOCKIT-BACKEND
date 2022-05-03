@@ -7,7 +7,7 @@ import Stockit.domain.stock.Stock;
 import Stockit.infrastructure.member.MemberRepository;
 import Stockit.infrastructure.order.OrderRepository;
 import Stockit.infrastructure.stock.StockRepository;
-import Stockit.interfaces.order.OrderRequest;
+import Stockit.interfaces.order.dto.OrderRequest;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

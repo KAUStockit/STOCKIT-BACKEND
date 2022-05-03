@@ -1,7 +1,7 @@
 package Stockit.domain.member;
 
 import Stockit.domain.order.Order;
-import Stockit.interfaces.member.MemberJoinRequest;
+import Stockit.interfaces.member.dto.MemberJoinRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;

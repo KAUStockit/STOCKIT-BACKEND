@@ -2,11 +2,11 @@ package Stockit.domain.member;
 
 import Stockit.config.security.jwt.JwtUtil;
 import Stockit.infrastructure.member.MemberRepository;
-import Stockit.interfaces.member.LoginRequest;
-import Stockit.interfaces.member.MemberInfo;
-import Stockit.interfaces.member.MemberJoinRequest;
-import Stockit.interfaces.member.RankingInfo;
-import Stockit.interfaces.order.OrderInfo;
+import Stockit.interfaces.member.dto.LoginRequest;
+import Stockit.interfaces.member.dto.MemberInfo;
+import Stockit.interfaces.member.dto.MemberJoinRequest;
+import Stockit.interfaces.member.dto.RankingInfo;
+import Stockit.interfaces.order.dto.OrderInfo;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;

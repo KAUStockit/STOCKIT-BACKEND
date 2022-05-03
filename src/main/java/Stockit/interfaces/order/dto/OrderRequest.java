@@ -1,4 +1,4 @@
-package Stockit.interfaces.order;
+package Stockit.interfaces.order.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

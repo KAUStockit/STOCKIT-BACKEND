@@ -2,7 +2,7 @@ package Stockit.domain.order;
 
 import Stockit.domain.member.Member;
 import Stockit.domain.stock.Stock;
-import Stockit.interfaces.order.OrderRequest;
+import Stockit.interfaces.order.dto.OrderRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;

@@ -2,6 +2,7 @@ package Stockit.interfaces.order;
 
 import Stockit.common.response.ApiResponse;
 import Stockit.domain.order.OrderService;
+import Stockit.interfaces.order.dto.OrderRequest;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

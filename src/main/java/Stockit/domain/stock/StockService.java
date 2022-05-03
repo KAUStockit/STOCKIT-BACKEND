@@ -2,9 +2,9 @@ package Stockit.domain.stock;
 
 import Stockit.infrastructure.stock.DailyStockRepository;
 import Stockit.infrastructure.stock.StockRepository;
-import Stockit.interfaces.stock.DailyStockInfo;
-import Stockit.interfaces.stock.StockInfo;
-import Stockit.interfaces.stock.StockUpdateRequest;
+import Stockit.interfaces.stock.dto.DailyStockInfo;
+import Stockit.interfaces.stock.dto.StockInfo;
+import Stockit.interfaces.stock.dto.StockUpdateRequest;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

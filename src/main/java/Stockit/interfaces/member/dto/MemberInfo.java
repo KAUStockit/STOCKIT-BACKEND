@@ -1,7 +1,7 @@
-package Stockit.interfaces.member;
+package Stockit.interfaces.member.dto;
 
 import Stockit.domain.member.Member;
-import Stockit.interfaces.order.OrderInfo;
+import Stockit.interfaces.order.dto.OrderInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

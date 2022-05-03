@@ -1,6 +1,6 @@
 package Stockit.domain.stock;
 
-import Stockit.interfaces.stock.StockInfo;
+import Stockit.interfaces.stock.dto.StockInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;

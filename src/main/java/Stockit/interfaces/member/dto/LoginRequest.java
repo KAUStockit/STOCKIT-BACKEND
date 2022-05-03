@@ -1,4 +1,4 @@
-package Stockit.interfaces.member;
+package Stockit.interfaces.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
