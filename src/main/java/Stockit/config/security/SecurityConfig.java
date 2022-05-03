@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${client.max_sec}")
     private long MAX_AGE_SECS;
+
     @Value("${client.urls}")
     private List<String> clientUrls;
 
@@ -61,11 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .cors().configurationSource(corsConfigurationSource()).and()
-
                 .authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll().and()
+                .cors().configurationSource(corsConfigurationSource()).and()
+                .csrf().disable()
 //                .antMatchers(
 //                        "/api/members/login/**",
 //                        "/api/members/new",
@@ -73,7 +73,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                ).permitAll()
 //                .antMatchers("api/members/admin").hasAnyAuthority(Role.ADMIN.name())
 //                .anyRequest().authenticated().and()
-                .anyRequest().permitAll().and()
+                .authorizeRequests()
+                .antMatchers("/**").permitAll().and() //임시로 모든 요청 허용
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
