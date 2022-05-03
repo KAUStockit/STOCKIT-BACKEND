@@ -3,6 +3,7 @@ package Stockit.interfaces.stock;
 import Stockit.domain.stock.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 @EnableScheduling
 @RequestMapping("/api/streaming")
+@Profile("production")
 public class StreamingController {
 
     private static final Map<String, SseEmitter> CLIENTS = new ConcurrentHashMap<>();
