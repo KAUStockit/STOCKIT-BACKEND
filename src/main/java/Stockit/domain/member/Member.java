@@ -20,30 +20,36 @@ import java.util.List;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Member {
-
-    @OneToMany(mappedBy = "member")
-    private final List<Order> orders = new ArrayList<>();
-    @Enumerated(EnumType.STRING)
-    private final Role role = Role.USER;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMBER_ID")
     private Long id;
+
     private String name;
+
     @Column(unique = true)
     private String nickname;
+
     @Column(unique = true)
     private String email;
+
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private final Role role = Role.USER;
+
     @CreatedDate
     private LocalDateTime createdTime;
+
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ACCOUNT_ID")
     private Account account;
 
-    ////////////////////////////////////////////////////////////////////////////
+    @OneToMany(mappedBy = "member")
+    private final List<Order> orders = new ArrayList<>();
 
     public Member(String name, String nickname, String email, String password) {
         this.name = name;
