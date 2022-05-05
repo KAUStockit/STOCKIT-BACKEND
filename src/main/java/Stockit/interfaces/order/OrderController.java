@@ -1,6 +1,6 @@
 package Stockit.interfaces.order;
 
-import Stockit.common.response.ApiResponse;
+import Stockit.common.response.CommonResponse;
 import Stockit.domain.order.OrderService;
 import Stockit.interfaces.order.dto.OrderRequest;
 import javassist.NotFoundException;
@@ -19,7 +19,7 @@ public class OrderController {
 
     //주문 생성
     @PostMapping(value = "/{memberIdx}/{stockCode}/new")
-    public ApiResponse<Long> createOrder(@PathVariable Long memberIdx, @PathVariable Long stockCode, @RequestBody OrderRequest orderDto) throws NotFoundException {
-        return ApiResponse.ok(orderService.createOrder(memberIdx, stockCode, orderDto));
+    public CommonResponse<Long> createOrder(@PathVariable Long memberIdx, @PathVariable Long stockCode, @RequestBody OrderRequest orderDto) throws NotFoundException {
+        return CommonResponse.success(orderService.createOrder(memberIdx, stockCode, orderDto));
     }
 }
