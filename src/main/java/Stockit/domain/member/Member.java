@@ -2,9 +2,9 @@ package Stockit.domain.member;
 
 import Stockit.domain.order.Order;
 import Stockit.interfaces.member.dto.MemberJoinRequest;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,10 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@ToString
 @Entity
-@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

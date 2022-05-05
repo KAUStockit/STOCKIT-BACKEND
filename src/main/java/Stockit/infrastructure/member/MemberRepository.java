@@ -11,12 +11,11 @@ import java.util.Optional;
 @Repository //스프링 빈으로 등록, JPA 예외를 스프링 기반 예외로 변환
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    Boolean existsByEmail(String email);
-
-    Boolean existsByNickname(String nickname);
-
     Optional<Member> findByEmail(String email);
 
+    Optional<Member> findByNickname(String nickname);
+
     @Query(value = "SELECT m.* FROM member m JOIN account acc ON m.account_id = acc.account_id ORDER BY acc.earning_rate DESC", nativeQuery = true)
-    List<Member> findAllByRank();
+    List<Member> findAllWithEarningRate();
+
 }
