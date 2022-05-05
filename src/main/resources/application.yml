@@ -23,9 +23,8 @@ logging:
       springframework.web: debug
 
 login:
-  jwtSecretKey:
-  retentionMinutes:
+  retentionMinutes: 720
 
 client:
   max_sec: 3600
-  urls:
+  urls: http://localhost:3000, http://127.0.0.1:3000

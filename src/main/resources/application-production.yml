@@ -23,8 +23,7 @@ logging:
       springframework.web: debug
 
 login:
-  jwtSecretKey:
-  retentionMinutes:
+  retentionMinutes: 720
 
 client:
   max_sec: 3600

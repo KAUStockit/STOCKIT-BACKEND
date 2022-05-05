@@ -17,11 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import javax.crypto.SecretKey;
+
 @Service
 public class JwtUtil {
 
-    @Value("${login.jwtSecretKey}")
-    private String secretKey;
+    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     @Value("${login.retentionMinutes}")
     private int LOGIN_RETENTION_MINUTES;
@@ -41,7 +42,7 @@ public class JwtUtil {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigninKey(secretKey))
+                .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -59,7 +60,7 @@ public class JwtUtil {
     private String createToken(Map<String, Object> claims, String subject) {
         Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(LOGIN_RETENTION_MINUTES).atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(expiredDate).signWith(getSigninKey(secretKey), SignatureAlgorithm.HS256).compact();
+                .setExpiration(expiredDate).signWith(secretKey, SignatureAlgorithm.HS512).compact();
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
