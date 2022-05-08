@@ -12,5 +12,5 @@ public interface MemberReader {
 
     Optional<Member> findMemberByEmail(String email);
 
-    List<Member> getRankingList();
+    List<Member> getAllByOrderByEarningRateDesc();
 }

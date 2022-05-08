@@ -1,13 +1,16 @@
 package Stockit.domain.member;
 
 import Stockit.config.security.jwt.JwtUtil;
-import Stockit.infrastructure.member.MemberRepository;
+import Stockit.domain.member.dto.MemberInfo;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 
-import static org.mockito.ArgumentMatchers.any;
+import java.util.Optional;
+
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceImplTest {
@@ -16,7 +19,7 @@ class MemberServiceImplTest {
     private MemberReader memberReader;
 
     @Mock
-    private MemberRepository memberRepository;
+    private MemberStore memberStore;
 
     @Spy
     private AuthenticationManager authenticationManager;
@@ -25,6 +28,15 @@ class MemberServiceImplTest {
     private JwtUtil jwtUtil;
 
     @InjectMocks
-    private MemberService memberService;
+    private MemberServiceImpl memberService;
 
+    @Test
+    void 존재하는_멤버_아이디로_멤버를_조회할_수_있다() {
+
+    }
+
+    @Test
+    void 존재하지_않는_멤버_아이디로_멤버를_조회할_수_있다() {
+
+    }
 }

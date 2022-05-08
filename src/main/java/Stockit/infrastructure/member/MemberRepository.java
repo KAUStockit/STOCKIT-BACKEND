@@ -16,6 +16,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByNickname(String nickname);
 
     @Query(value = "SELECT m.* FROM member m JOIN account acc ON m.account_id = acc.account_id ORDER BY acc.earning_rate DESC", nativeQuery = true)
-    List<Member> findAllWithEarningRate();
+    List<Member> getAllByOrderByEarningRateDesc();
 
+    List<Member> findAll();
 }

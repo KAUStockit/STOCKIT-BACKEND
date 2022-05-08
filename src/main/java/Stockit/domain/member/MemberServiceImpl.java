@@ -57,7 +57,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<RankingInfo> getRankingList() {
-        return memberReader.getRankingList()
+        return memberReader.getAllByOrderByEarningRateDesc()
                 .stream()
                 .map(RankingInfo::new)
                 .collect(Collectors.toList());

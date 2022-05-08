@@ -35,7 +35,7 @@ public class MemberReaderImpl implements MemberReader {
     }
 
     @Override
-    public List<Member> getRankingList() {
-        return memberRepository.findAllWithEarningRate();
+    public List<Member> getAllByOrderByEarningRateDesc() {
+        return memberRepository.getAllByOrderByEarningRateDesc();
     }
 }

@@ -33,4 +33,8 @@ public class Account {
     public void updateBalance(int money) {
         this.balance = this.balance + money;
     }
+
+    public void updateEarningRate(Double earningRate) {
+        this.earningRate = earningRate;
+    }
 }
